@@ -1,0 +1,16 @@
+{
+  "grid_size": 5,
+  "fleet_size": 8,
+  "day_minutes": 180,
+  "discount_factor": 0.95,
+  "reward": {
+    "fare_weight": 4.0,
+    "wait_penalty": 0.08,
+    "cancellation_penalty": 5.0,
+    "empty_distance_penalty": 0.08
+  },
+  "evaluation": {
+    "seeds": [42, 123, 456, 789],
+    "fleet_sizes": [4, 8, 12]
+  }
+}
