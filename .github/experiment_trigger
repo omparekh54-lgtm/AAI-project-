@@ -1,1 +1,1 @@
-Run the 360-episode DQN training and 20-seed held-out benchmark using full 24-hour (1440-minute) simulation days.
+Run the final full-day DQN training and held-out fleet/peak benchmark. Refresh this marker whenever the benchmark should be rerun.
