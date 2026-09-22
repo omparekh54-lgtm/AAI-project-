@@ -28,21 +28,8 @@ def valid_actions(env: CabDispatchEnv, cab) -> list[int]:
     return actions
 
 
-def run_dqn_episode(agent: SharedDQNAgent, seed: int, fleet_size: int = 8, day_minutes: int = 180) -> dict:
-    env = CabDispatchEnv(seed=seed, fleet_size=fleet_size, day_minutes=day_minutes)
-    env.reset()
-    while env.minute < env.day_minutes:
-        states = env.observations()
-        actions = {}
-        for cab in env.cabs:
-            if cab.status == "idle":
-                actions[cab.cab_id] = agent.act(
-                    states[cab.cab_id], valid_actions(env, cab), explore=False
-                )
-            else:
-                actions[cab.cab_id] = env.ACTION_WAIT
-        env.step(actions)
-    return env.run(lambda e: {}) if False else {
+def metrics_from_env(env: CabDispatchEnv) -> dict:
+    return {
         "minutes": env.day_minutes,
         "requests": len(env.requests),
         "completed": env.completed,
@@ -57,6 +44,23 @@ def run_dqn_episode(agent: SharedDQNAgent, seed: int, fleet_size: int = 8, day_m
         / max(1, env.fleet_size * env.day_minutes),
         "earnings": env.total_fare,
     }
+
+
+def run_dqn_episode(agent: SharedDQNAgent, seed: int, fleet_size: int = 8, day_minutes: int = 180) -> dict:
+    env = CabDispatchEnv(seed=seed, fleet_size=fleet_size, day_minutes=day_minutes)
+    env.reset()
+    while env.minute < env.day_minutes:
+        states = env.observations()
+        actions = {}
+        for cab in env.cabs:
+            if cab.status == "idle":
+                actions[cab.cab_id] = agent.act(
+                    states[cab.cab_id], valid_actions(env, cab), explore=False
+                )
+            else:
+                actions[cab.cab_id] = env.ACTION_WAIT
+        env.step(actions)
+    return metrics_from_env(env)
 
 
 def load_agent(path: str) -> SharedDQNAgent:
