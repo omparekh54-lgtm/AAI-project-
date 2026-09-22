@@ -1,57 +1,62 @@
 from __future__ import annotations
 import argparse
+import json
 import os
 import torch
 from .environment.simulator import CabDispatchEnv
 from .agents.dqn import SharedDQNAgent
 
 
-def valid_actions(env, cab):
-    actions = [env.ACTION_WAIT, env.ACTION_ACCEPT]
-    x, y = cab.position
-    if x > 0: actions.append(env.ACTION_NORTH)
-    if x < 4: actions.append(env.ACTION_SOUTH)
-    if y > 0: actions.append(env.ACTION_WEST)
-    if y < 4: actions.append(env.ACTION_EAST)
-    return actions
-
-
-def train(episodes=360, seed=42):
+def train(episodes=360, seed=42, day_minutes=1440, fleet_size=8, learn_every=4):
     agent = SharedDQNAgent(gamma=0.95, seed=seed)
-    rewards = []
+    rewards, losses, epsilons = [], [], []
     for episode in range(1, episodes + 1):
-        env = CabDispatchEnv(seed=seed + episode, fleet_size=8, day_minutes=1440)
-        env.reset()
+        env = CabDispatchEnv(seed=seed + episode, fleet_size=fleet_size, day_minutes=day_minutes)
+        states = env.reset()
         episode_reward = 0.0
-        for _ in range(env.day_minutes):
-            before_completed, before_cancelled, before_empty = env.completed, env.cancelled, env.total_empty_distance
-            states = env.observations()
+        episode_losses = []
+        for step in range(day_minutes):
             actions = {}
             for cab in env.cabs:
                 if cab.status == "idle":
-                    actions[cab.cab_id] = agent.act(states[cab.cab_id], valid_actions(env, cab))
+                    actions[cab.cab_id] = agent.act(states[cab.cab_id], env.valid_actions(cab))
                 else:
                     actions[cab.cab_id] = env.ACTION_WAIT
             env.step(actions)
             next_states = env.observations()
-            reward = 4.0 * (env.completed - before_completed) - 5.0 * (env.cancelled - before_cancelled) - 0.08 * (env.total_empty_distance - before_empty)
-            episode_reward += reward
-            done = env.minute >= env.day_minutes
+            done = step == day_minutes - 1
             for cab in env.cabs:
-                s = states[cab.cab_id]
-                ns = next_states[cab.cab_id]
-                agent.remember(s, actions[cab.cab_id], reward / max(1, len(env.cabs)), ns, done)
-            agent.learn()
-        rewards.append(episode_reward)
-        if episode % max(1, episodes // 10) == 0:
-            print(f"Episode {episode:4d}/{episodes} | reward={episode_reward:8.2f} | epsilon={agent.epsilon:.3f}")
+                reward = env.last_rewards[cab.cab_id]
+                episode_reward += reward
+                agent.remember(states[cab.cab_id], actions[cab.cab_id], reward,
+                               next_states[cab.cab_id], done)
+            if step % learn_every == 0:
+                loss = agent.learn()
+                if loss is not None:
+                    episode_losses.append(loss)
+            states = next_states
+        rewards.append(float(episode_reward))
+        losses.append(float(sum(episode_losses) / max(1, len(episode_losses))))
+        epsilons.append(float(agent.epsilon))
+        if episode % max(1, episodes // 12) == 0:
+            print(f"Episode {episode:4d}/{episodes} | reward={episode_reward:10.2f} | loss={losses[-1]:.4f} | epsilon={agent.epsilon:.3f}")
+
     os.makedirs("models", exist_ok=True)
-    torch.save({"model": agent.policy.state_dict(), "epsilon": agent.epsilon, "rewards": rewards}, "models/dqn_latest.pt")
+    os.makedirs("results", exist_ok=True)
+    torch.save({"model": agent.policy.state_dict(), "epsilon": agent.epsilon,
+                "rewards": rewards, "losses": losses, "episodes": episodes},
+               "models/dqn_latest.pt")
+    with open("results/training_curve.json", "w", encoding="utf-8") as handle:
+        json.dump({"episodes": episodes, "rewards": rewards, "losses": losses, "epsilons": epsilons}, handle, indent=2)
     return rewards
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--episodes", type=int, default=360)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--day-minutes", type=int, default=1440)
+    parser.add_argument("--fleet-size", type=int, default=8)
+    parser.add_argument("--learn-every", type=int, default=4)
     args = parser.parse_args()
-    train(args.episodes, args.seed)
+    train(args.episodes, args.seed, args.day_minutes, args.fleet_size, args.learn_every)
