@@ -1,1 +1,1 @@
-Run the full 100-episode DQN training and 20-seed held-out benchmark.
+Run the 360-episode DQN training and 20-seed held-out benchmark using full 24-hour (1440-minute) simulation days.
