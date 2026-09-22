@@ -1,0 +1,46 @@
+name: Train and benchmark AAI
+
+on:
+  workflow_dispatch:
+    inputs:
+      episodes:
+        description: Training episodes
+        required: true
+        default: '100'
+        type: string
+      evaluation_episodes:
+        description: Held-out evaluation episodes
+        required: true
+        default: '20'
+        type: string
+
+jobs:
+  train-and-evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Train DQN
+        run: python -m backend.train --episodes ${{ inputs.episodes }} --seed 42
+
+      - name: Run held-out benchmark
+        run: python -m backend.experiment --episodes ${{ inputs.evaluation_episodes }}
+
+      - name: Upload model and experiment results
+        uses: actions/upload-artifact@v4
+        with:
+          name: aai-training-results
+          path: |
+            models/dqn_latest.pt
+            results/*.json
+            results/*.csv
