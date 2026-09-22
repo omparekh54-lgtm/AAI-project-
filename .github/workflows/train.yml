@@ -6,10 +6,10 @@ on:
       episodes:
         description: Training episodes
         required: true
-        default: '100'
+        default: '360'
         type: string
       evaluation_episodes:
-        description: Held-out evaluation episodes
+        description: Held-out full-day evaluation episodes
         required: true
         default: '20'
         type: string
@@ -23,7 +23,7 @@ permissions:
 jobs:
   train-and-evaluate:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 180
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,10 +36,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Train DQN
-        run: python -m backend.train --episodes ${{ inputs.episodes || '100' }} --seed 42
+      - name: Train DQN for 360 full-day episodes
+        run: python -m backend.train --episodes ${{ inputs.episodes || '360' }} --seed 42
 
-      - name: Run held-out benchmark
+      - name: Run held-out full-day benchmark
         run: python -m backend.experiment --episodes ${{ inputs.evaluation_episodes || '20' }}
 
       - name: Upload model and experiment results
@@ -56,5 +56,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add models/dqn_latest.pt results/*.json results/*.csv
-          git diff --cached --quiet || git commit -m "Publish DQN benchmark results"
+          git diff --cached --quiet || git commit -m "Publish 360-episode full-day DQN benchmark"
           git push
