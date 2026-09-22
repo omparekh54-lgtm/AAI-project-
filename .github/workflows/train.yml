@@ -13,6 +13,12 @@ on:
         required: true
         default: '20'
         type: string
+  push:
+    paths:
+      - '.github/experiment_trigger'
+
+permissions:
+  contents: write
 
 jobs:
   train-and-evaluate:
@@ -31,10 +37,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Train DQN
-        run: python -m backend.train --episodes ${{ inputs.episodes }} --seed 42
+        run: python -m backend.train --episodes ${{ inputs.episodes || '100' }} --seed 42
 
       - name: Run held-out benchmark
-        run: python -m backend.experiment --episodes ${{ inputs.evaluation_episodes }}
+        run: python -m backend.experiment --episodes ${{ inputs.evaluation_episodes || '20' }}
 
       - name: Upload model and experiment results
         uses: actions/upload-artifact@v4
@@ -44,3 +50,11 @@ jobs:
             models/dqn_latest.pt
             results/*.json
             results/*.csv
+
+      - name: Publish experiment outputs to repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add models/dqn_latest.pt results/*.json results/*.csv
+          git diff --cached --quiet || git commit -m "Publish DQN benchmark results"
+          git push
