@@ -16,11 +16,11 @@ def valid_actions(env, cab):
     return actions
 
 
-def train(episodes=100, seed=42):
+def train(episodes=360, seed=42):
     agent = SharedDQNAgent(gamma=0.95, seed=seed)
     rewards = []
     for episode in range(1, episodes + 1):
-        env = CabDispatchEnv(seed=seed + episode, fleet_size=8, day_minutes=180)
+        env = CabDispatchEnv(seed=seed + episode, fleet_size=8, day_minutes=1440)
         env.reset()
         episode_reward = 0.0
         for _ in range(env.day_minutes):
@@ -51,7 +51,7 @@ def train(episodes=100, seed=42):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--episodes", type=int, default=100)
+    parser.add_argument("--episodes", type=int, default=360)
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
     train(args.episodes, args.seed)
