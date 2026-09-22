@@ -14,7 +14,7 @@ class StepStats:
     avg_wait: float
 
 class CabDispatchEnv:
-    """Small deterministic-friendly simulator used by baselines and DQN."""
+    """Full-day 5x5 cab-dispatch simulator."""
     ACTION_WAIT = 0
     ACTION_ACCEPT = 1
     ACTION_NORTH = 2
@@ -23,7 +23,7 @@ class CabDispatchEnv:
     ACTION_EAST = 5
     ACTION_NAMES = {0:"WAIT",1:"ACCEPT",2:"NORTH",3:"SOUTH",4:"WEST",5:"EAST"}
 
-    def __init__(self, seed: int = 42, fleet_size: int = 8, day_minutes: int = 180):
+    def __init__(self, seed: int = 42, fleet_size: int = 8, day_minutes: int = 1440):
         self.seed = seed
         self.rng = random.Random(seed)
         self.fleet_size = fleet_size
