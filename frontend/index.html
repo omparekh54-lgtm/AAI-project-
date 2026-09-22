@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Multi-Agent Cab Dispatch reinforcement learning research simulator" />
+  <title>CabMind | Multi-Agent Dispatch Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">CM</div><div><strong>CabMind</strong><span>Multi-Agent Dispatch Lab</span></div></div>
+      <div class="top-actions"><span class="status-dot"></span><span>Simulation engine online</span><a href="https://github.com/omparekh54-lgtm/AAI-project-" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">AAI RESEARCH PROTOTYPE · 5 × 5 CITY · 8 AGENTS</p>
+          <h1>Teach a fleet to <em>think</em> before it drives.</h1>
+          <p class="hero-copy">A decentralized cab-dispatch simulator comparing rule-based dispatch with parameter-shared deep reinforcement learning.</p>
+        </div>
+        <div class="hero-card"><div class="hero-number" id="episodeValue">1,000</div><div>training episodes</div><div class="mini-progress"><span></span></div><small>DQN convergence monitor</small></div>
+      </section>
+
+      <section class="control-panel panel">
+        <div class="control"><label>Algorithm</label><select id="algorithm"><option>DQN</option><option>Nearest Cab</option><option>Zone Balancing</option></select></div>
+        <div class="control"><label>Fleet size</label><input id="fleet" type="range" min="4" max="12" value="8"><b id="fleetValue">8</b></div>
+        <div class="control"><label>Demand</label><select id="demand"><option>Normal</option><option>Peak</option><option>Airport-heavy</option></select></div>
+        <div class="control"><label>Speed</label><select id="speed"><option value="700">1×</option><option value="350">2×</option><option value="120">5×</option></select></div>
+        <button id="runBtn" class="primary">Run simulation <span>▶</span></button>
+      </section>
+
+      <section class="main-grid">
+        <div class="panel map-panel">
+          <div class="panel-head"><div><p class="eyebrow">LIVE ENVIRONMENT</p><h2>City state</h2></div><div class="clock" id="clock">06:00</div></div>
+          <div class="city-wrap"><div id="city" class="city"></div></div>
+          <div class="legend"><span><i class="cab-dot"></i> cab</span><span><i class="request-dot"></i> request</span><span><i class="hot-dot"></i> hotspot</span><span><i class="airport-dot"></i> airport</span></div>
+        </div>
+
+        <aside class="panel agent-panel">
+          <div class="panel-head"><div><p class="eyebrow">AGENT INSPECTOR</p><h2 id="agentTitle">Cab 04</h2></div><span class="pill" id="agentStatus">IDLE</span></div>
+          <div class="agent-location"><span>Current zone</span><strong id="agentZone">12 · Central</strong></div>
+          <div class="q-block"><div class="subhead"><span>Local observation</span><span id="obsDemand">4 requests</span></div><div class="obs-grid" id="obsGrid"></div></div>
+          <div class="q-block"><div class="subhead"><span>Q-values</span><span>γ = 0.95</span></div><div id="qValues"></div></div>
+          <div class="decision"><span>Selected action</span><strong id="decision">REPOSITION EAST</strong></div>
+        </aside>
+      </section>
+
+      <section class="stats-grid">
+        <div class="metric"><span>Avg rider wait</span><strong id="waitMetric">4.8 min</strong><small>↓ 18% vs nearest cab</small></div>
+        <div class="metric"><span>Service rate</span><strong id="serviceMetric">91.2%</strong><small>requests completed</small></div>
+        <div class="metric"><span>Cancellation</span><strong id="cancelMetric">6.9%</strong><small>8 min timeout</small></div>
+        <div class="metric"><span>Empty driving</span><strong id="emptyMetric">18.4%</strong><small>fleet movement</small></div>
+        <div class="metric"><span>Fleet utilisation</span><strong id="utilMetric">73.6%</strong><small>time on trips</small></div>
+        <div class="metric"><span>Fleet earnings</span><strong id="earnMetric">₹1,240</strong><small>simulated day</small></div>
+      </section>
+
+      <section class="analysis-grid">
+        <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">TRAINING</p><h2>Reward trajectory</h2></div><span class="chart-note">1,000 episodes</span></div><canvas id="rewardChart"></canvas></div>
+        <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">BENCHMARK</p><h2>Policy comparison</h2></div><span class="chart-note">held-out simulation</span></div><div id="barChart" class="bars"></div></div>
+      </section>
+
+      <section class="research panel">
+        <div><p class="eyebrow">RESEARCH DESIGN</p><h2>From greedy dispatch to cooperative learning</h2><p>Every method faces the same simulated demand patterns. The experiment ladder is Nearest Cab → Zone Balancing → parameter-shared DQN → neighbour-aware/shared-reward DQN → optional VDN/QMIX.</p></div>
+        <div class="research-points"><span><b>25</b> zones</span><span><b>8</b> cab agents</span><span><b>6</b> actions</span><span><b>0.95</b> discount</span></div>
+      </section>
+    </main>
+    <footer>CabMind · Multi-Agent Cab Dispatch using Reinforcement Learning · Research prototype</footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
