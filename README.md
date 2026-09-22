@@ -1,35 +1,54 @@
 # Multi-Agent Cab Dispatch using Reinforcement Learning
 
-A research-grade prototype for decentralized multi-agent cab dispatch on a 5×5 simulated city grid with 8 cabs.
+A research prototype implementing the AAI project proposal: a decentralised multi-agent cab-dispatch system in a 5×5 simulated city with 8 learning agents.
 
-## What this project contains
+## PPT-aligned scope
 
-- 5×5 grid-city simulator
-- 8 cab agents
-- Synthetic demand with normal, morning peak, evening peak and airport hotspot behavior
-- Nearest-cab and zone-balancing baselines
-- Parameter-shared DQN agent with replay buffer and target network
-- Local observations and neighbour information
-- Hybrid individual/shared reward design
-- Evaluation metrics: wait time, service rate, cancellation rate, empty driving, utilisation and earnings
-- Interactive browser dashboard for simulation and results
-- Python training/evaluation implementation for reproducible experiments
+- 5×5 zone grid and fixed fleet
+- 8 cab agents in the pilot configuration
+- Full 24-hour (1,440 minute) episodes
+- Stochastic time-varying demand with morning/evening peaks
+- Airport demand hotspot
+- Local observations plus neighbour idle/request counts
+- Maximum pickup radius and rider cancellation timeout
+- Configurable driver shift
+- Nearest-Cab Greedy baseline
+- Zone-Balancing baseline
+- Parameter-shared DQN, γ = 0.95
+- Experience replay and target network
+- Hybrid individual + city-wide shared reward
+- Held-out multi-seed evaluation
+- Peak/off-peak analysis
+- Fleet-size sweep: 4, 8, 12, 16 cabs
+- Metrics: wait, pickup distance, service rate, cancellations, empty driving, utilisation, earnings, earnings fairness and convergence
+- VDN cooperative value-decomposition extension
+- Interactive research dashboard
 
 ## Architecture
 
-Long-running RL training is intentionally kept in Python rather than inside Vercel request handlers. The browser dashboard is deployed as a static application and visualizes the simulator and measured experiment outputs.
-
 ```text
-Demand generator → Multi-agent environment → Baselines / DQN → Metrics → Results
-                                      ↓
-                              Interactive dashboard
+                Synthetic demand profile
+                         ↓
+              5×5 multi-agent environment
+                         ↓
+        ┌────────────────┼────────────────┐
+        ↓                ↓                ↓
+  Nearest Cab      Zone Balancing       DQN
+        │                │                │
+        └────────────────┼────────────────┘
+                         ↓
+              Held-out evaluation
+                         ↓
+        fleet sweep + peak/off-peak + seeds
+                         ↓
+                  JSON / CSV results
+                         ↓
+                Research dashboard
 ```
 
-## Run the dashboard locally
+Training is deliberately kept in Python. Vercel hosts the static research dashboard rather than a long-running RL training process.
 
-Open `frontend/index.html` in a browser or serve the repository with any static server.
-
-## Run the Python simulator
+## Run locally
 
 ```bash
 python -m venv .venv
@@ -39,58 +58,57 @@ pip install -r requirements.txt
 python -m backend.demo
 ```
 
-## Train DQN
+## Train the proposed DQN
+
+The final experiment uses 360 complete simulated days:
 
 ```bash
-python -m backend.train --episodes 1000
+python -m backend.train --episodes 360 --day-minutes 1440 --fleet-size 8 --learn-every 4
 ```
 
-For a quick smoke test:
+## Run the research benchmark
 
 ```bash
-python -m backend.train --episodes 10
+python -m backend.experiment --episodes 5 --fleet-sizes 4,8,12,16 --day-minutes 1440
 ```
 
-## Evaluate baselines and DQN
+This evaluates identical seeds across the rule baselines and DQN, then reports mean and population spread for the research metrics.
 
-```bash
-python -m backend.evaluate --episodes 100
-```
+## VDN extension
 
-## Research formulation
+`backend/agents/vdn.py` implements a centralised-training/value-decomposition extension in which local cab Q-values are summed into a joint team value while execution remains decentralised. It is an extension to the core DQN experiment, not a claim that VDN already outperforms DQN.
 
-Each cab observes a local state containing its position, time, status, nearby requests and local/neighboring idle-cab information. The conceptual action set is accept, wait, or reposition. The implementation expands reposition into valid directional moves on the grid.
+## Demand calibration
 
-The project is intentionally staged:
+The simulator currently uses a clearly labelled synthetic demand prior. Its time-of-day and airport-hotspot parameters are deliberately exposed as a calibration surface for future fitting to public taxi-trip statistics. The repository does not claim that the current synthetic rates are measurements from a real city.
 
-1. Nearest-cab baseline
-2. Zone-balancing baseline
-3. Parameter-shared DQN
-4. Neighbour-aware/shared-reward DQN
-5. Optional VDN/QMIX extension
+## Results integrity
 
-No performance claim is made until the evaluation scripts produce measured results.
+The dashboard consumes `results/experiment_results.json` and `results/training_curve.json`. Results are generated by the Python simulator and benchmark scripts. No performance number should be manually entered into the dashboard.
 
 ## Repository structure
 
 ```text
 backend/
-  environment/   city, demand, cabs and simulation
-  agents/        DQN and replay buffer
-  baselines/     deterministic benchmark policies
-  metrics/       experiment metrics
-  demo.py        simulator smoke demo
-  train.py       DQN training entry point
-  evaluate.py    benchmark entry point
+  environment/   city, demand, cabs and simulator
+  agents/        DQN, replay buffer and VDN extension
+  baselines/     nearest-cab and zone-balancing policies
+  metrics/       metric helpers
+  train.py       360-day DQN training entry point
+  experiment.py  held-out benchmark, fleet sweep and period analysis
+  evaluate.py    benchmark utilities
 frontend/
-  index.html     deployed research dashboard
+  index.html     research dashboard
   styles.css     dashboard styling
-  app.js         interactive simulation and charts
+  app.js         interactive simulation and research charts
 configs/         experiment configuration
-results/         generated experiment outputs
+results/         generated JSON/CSV outputs
 models/          generated model checkpoints
+.github/workflows/
+  smoke.yml      automated Python smoke tests
+  train.yml      full training and benchmark workflow
 ```
 
 ## Deployment
 
-The frontend is Vercel-friendly because it has no build-time dependency on a Python runtime. Training remains reproducible in Python and can be moved to a GPU/compute service later if larger experiments are required.
+The repository is configured for Vercel as a static frontend. Import the GitHub repository into Vercel with the frontend rewrites in `vercel.json`. Every subsequent push to the connected `main` branch can produce a production deployment through Vercel's Git integration.
