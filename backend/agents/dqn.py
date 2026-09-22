@@ -5,27 +5,34 @@ import torch
 from torch import nn, optim
 from .replay_buffer import ReplayBuffer
 
+
 class QNetwork(nn.Module):
     def __init__(self, state_size: int, action_size: int):
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(state_size, 128), nn.ReLU(),
             nn.Linear(128, 128), nn.ReLU(),
-            nn.Linear(128, action_size)
+            nn.Linear(128, action_size),
         )
+
     def forward(self, x):
         return self.net(x)
 
+
 class SharedDQNAgent:
-    """Parameter-shared DQN. Each cab owns experience, while the Q network is shared."""
-    def __init__(self, state_size=8, action_size=6, gamma=0.95, lr=1e-3, batch_size=64, seed=42):
-        random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
+    """Parameter-shared DQN used by the homogeneous cab agents."""
+    def __init__(self, state_size=16, action_size=6, gamma=0.95, lr=1e-3,
+                 batch_size=64, seed=42, target_update=100):
+        random.seed(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
         self.action_size = action_size
         self.gamma = gamma
         self.batch_size = batch_size
         self.epsilon = 1.0
         self.epsilon_min = 0.05
         self.epsilon_decay = 0.995
+        self.target_update = target_update
         self.policy = QNetwork(state_size, action_size)
         self.target = QNetwork(state_size, action_size)
         self.target.load_state_dict(self.policy.state_dict())
@@ -58,9 +65,12 @@ class SharedDQNAgent:
             next_q = self.target(next_states).max(1).values
             target = rewards + self.gamma * next_q * (1 - dones)
         loss = nn.functional.smooth_l1_loss(q, target)
-        self.optim.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(self.policy.parameters(), 1.0); self.optim.step()
+        self.optim.zero_grad()
+        loss.backward()
+        nn.utils.clip_grad_norm_(self.policy.parameters(), 1.0)
+        self.optim.step()
         self.learn_steps += 1
-        if self.learn_steps % 100 == 0:
+        if self.learn_steps % self.target_update == 0:
             self.target.load_state_dict(self.policy.state_dict())
         self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
         return float(loss.item())
