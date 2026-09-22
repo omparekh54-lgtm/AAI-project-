@@ -11,16 +11,16 @@
   <div class="shell">
     <header class="topbar">
       <div class="brand"><div class="brand-mark">CM</div><div><strong>CabMind</strong><span>Multi-Agent Dispatch Lab</span></div></div>
-      <div class="top-actions"><span class="status-dot"></span><span>Simulation engine online</span><a href="https://github.com/omparekh54-lgtm/AAI-project-" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+      <div class="top-actions"><span class="status-dot"></span><span>Research dashboard online</span><a href="https://github.com/omparekh54-lgtm/AAI-project-" target="_blank" rel="noreferrer">GitHub ↗</a></div>
     </header>
     <main>
       <section class="hero">
         <div>
-          <p class="eyebrow">AAI RESEARCH PROTOTYPE · 5 × 5 CITY · 8 AGENTS</p>
+          <p class="eyebrow">AAI RESEARCH PROJECT · 5 × 5 CITY · 8 AGENTS</p>
           <h1>Teach a fleet to <em>think</em> before it drives.</h1>
-          <p class="hero-copy">A decentralized cab-dispatch simulator comparing rule-based dispatch with parameter-shared deep reinforcement learning.</p>
+          <p class="hero-copy">A decentralised multi-agent cab-dispatch simulator comparing nearest-cab and zone-balancing rules with parameter-shared deep reinforcement learning.</p>
         </div>
-        <div class="hero-card"><div class="hero-number" id="episodeValue">30</div><div>measured training episodes</div><div class="mini-progress"><span></span></div><small>First reproducible benchmark</small></div>
+        <div class="hero-card"><div class="hero-number" id="episodeValue">360</div><div>full-day training episodes</div><div class="mini-progress"><span></span></div><small>Measured benchmark pipeline</small></div>
       </section>
       <section class="control-panel panel">
         <div class="control"><label>Algorithm</label><select id="algorithm"><option>DQN</option><option>Nearest Cab</option><option>Zone Balancing</option></select></div>
@@ -31,36 +31,33 @@
       </section>
       <section class="main-grid">
         <div class="panel map-panel">
-          <div class="panel-head"><div><p class="eyebrow">LIVE ENVIRONMENT</p><h2>City state</h2></div><div class="clock" id="clock">06:00</div></div>
+          <div class="panel-head"><div><p class="eyebrow">LIVE ENVIRONMENT</p><h2>City state</h2></div><div class="clock" id="clock">00:00</div></div>
           <div class="city-wrap"><div id="city" class="city"></div></div>
           <div class="legend"><span><i class="cab-dot"></i> cab</span><span><i class="request-dot"></i> request</span><span><i class="hot-dot"></i> hotspot</span><span><i class="airport-dot"></i> airport</span></div>
         </div>
         <aside class="panel agent-panel">
           <div class="panel-head"><div><p class="eyebrow">AGENT INSPECTOR</p><h2 id="agentTitle">Cab 04</h2></div><span class="pill" id="agentStatus">IDLE</span></div>
           <div class="agent-location"><span>Current zone</span><strong id="agentZone">12 · Central</strong></div>
-          <div class="q-block"><div class="subhead"><span>Local observation</span><span id="obsDemand">4 requests</span></div><div class="obs-grid" id="obsGrid"></div></div>
-          <div class="q-block"><div class="subhead"><span>Q-values</span><span>γ = 0.95</span></div><div id="qValues"></div></div>
-          <div class="decision"><span>Selected action</span><strong id="decision">REPOSITION EAST</strong></div>
+          <div class="obs-grid" id="obsGrid"></div>
+          <div class="decision-box"><span>Selected decision</span><strong id="decision">WAIT</strong></div>
+          <div class="agent-observation"><span>Nearby demand</span><strong id="obsDemand">0 requests</strong></div>
+          <div class="q-values"><p class="eyebrow">Q-VALUE VIEW</p><div id="qValues"></div></div>
         </aside>
       </section>
-      <section class="stats-grid">
-        <div class="metric"><span>Avg rider wait</span><strong id="waitMetric">—</strong><small>measured held-out benchmark</small></div>
-        <div class="metric"><span>Service rate</span><strong id="serviceMetric">—</strong><small>measured held-out benchmark</small></div>
-        <div class="metric"><span>Cancellation</span><strong id="cancelMetric">—</strong><small>1 − service rate</small></div>
-        <div class="metric"><span>Empty driving</span><strong id="emptyMetric">—</strong><small>measured empty-driving ratio</small></div>
-        <div class="metric"><span>Fleet utilisation</span><strong id="utilMetric">—</strong><small>busy minutes / fleet capacity</small></div>
-        <div class="metric"><span>Fleet earnings</span><strong id="earnMetric">—</strong><small>simulated earnings</small></div>
+      <section class="metrics-grid">
+        <div class="metric"><span>Average rider wait</span><strong id="waitMetric">—</strong><small>held-out benchmark</small></div>
+        <div class="metric"><span>Service rate</span><strong id="serviceMetric">—</strong><small>requests served</small></div>
+        <div class="metric"><span>Cancellation rate</span><strong id="cancelMetric">—</strong><small>requests cancelled</small></div>
+        <div class="metric"><span>Empty driving</span><strong id="emptyMetric">—</strong><small>empty-driving ratio</small></div>
+        <div class="metric"><span>Fleet utilisation</span><strong id="utilMetric">—</strong><small>busy minutes / capacity</small></div>
+        <div class="metric"><span>Fleet earnings</span><strong id="earnMetric">—</strong><small>simulated fare</small></div>
       </section>
-      <section class="analysis-grid">
-        <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">TRAINING</p><h2>Reward trajectory</h2></div><span class="chart-note">30 measured episodes</span></div><canvas id="rewardChart"></canvas></div>
-        <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">BENCHMARK</p><h2>Policy comparison</h2></div><span class="chart-note">10 held-out seeds</span></div><div id="barChart" class="bars"></div></div>
-      </section>
-      <section class="research panel">
-        <div><p class="eyebrow">RESEARCH DESIGN</p><h2>From greedy dispatch to cooperative learning</h2><p>Every method faces the same simulated demand patterns. The experiment ladder is Nearest Cab → Zone Balancing → parameter-shared DQN → neighbour-aware/shared-reward DQN → optional VDN/QMIX.</p></div>
-        <div class="research-points"><span><b>25</b> zones</span><span><b>8</b> cab agents</span><span><b>6</b> actions</span><span><b>0.95</b> discount</span></div>
+      <section class="research-grid">
+        <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">TRAINING</p><h2>DQN reward trajectory</h2></div><span class="chart-note">360 full-day training episodes</span></div><canvas id="rewardChart"></canvas></div>
+        <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">BENCHMARK</p><h2>DQN vs baselines</h2></div><span class="chart-note">8-cab held-out results</span></div><div id="barChart" class="bar-chart"></div></div>
       </section>
     </main>
-    <footer>CabMind · Multi-Agent Cab Dispatch using Reinforcement Learning · Research prototype</footer>
+    <footer>CabMind · AAI Project · Multi-Agent Cab Dispatch using Reinforcement Learning</footer>
   </div>
   <script src="app.js"></script>
 </body>
