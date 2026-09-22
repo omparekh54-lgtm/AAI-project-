@@ -1,16 +1,25 @@
 {
   "grid_size": 5,
   "fleet_size": 8,
-  "day_minutes": 180,
+  "day_minutes": 1440,
   "discount_factor": 0.95,
+  "environment": {
+    "max_pickup_radius": 3,
+    "cancellation_timeout_minutes": 8,
+    "shift_start_minute": 360,
+    "shift_end_minute": 1320,
+    "shared_reward_weight": 0.25,
+    "airport_hotspot_probability": 0.22
+  },
   "reward": {
-    "fare_weight": 4.0,
-    "wait_penalty": 0.08,
-    "cancellation_penalty": 5.0,
-    "empty_distance_penalty": 0.08
+    "fare_weight": 1.0,
+    "wait_penalty": 0.05,
+    "cancellation_penalty": 1.0,
+    "empty_distance_penalty": 0.20
   },
   "evaluation": {
-    "seeds": [42, 123, 456, 789],
-    "fleet_sizes": [4, 8, 12]
+    "seeds": [42, 123, 456, 789, 987],
+    "fleet_sizes": [4, 8, 12, 16],
+    "day_minutes": 1440
   }
 }
