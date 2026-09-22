@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "training_episodes": 30,
+    "evaluation_seeds": "1000-1009",
+    "fleet_size": 8,
+    "day_minutes": 180,
+    "note": "First reproducible CPU benchmark. Results are measured simulator outputs, not target claims."
+  },
+  "Nearest Cab": {
+    "service_rate": 0.9923556264218798,
+    "avg_wait": 3.1627906610308756,
+    "empty_distance": 223.6,
+    "empty_driving_ratio": 0.41608451001599805,
+    "utilisation": 0.21784722222222222,
+    "earnings": 1842.3
+  },
+  "Zone Balancing": {
+    "service_rate": 0.9977619404851212,
+    "avg_wait": 2.92240969772743,
+    "empty_distance": 588.9,
+    "empty_driving_ratio": 0.6519035209793844,
+    "utilisation": 0.21784722222222222,
+    "earnings": 1835.6
+  },
+  "Parameter-shared DQN": {
+    "service_rate": 0.9832638279538568,
+    "avg_wait": 3.4727046937792188,
+    "empty_distance": 509.2,
+    "empty_driving_ratio": 0.6222482407618872,
+    "utilisation": 0.2132638888888889,
+    "earnings": 1794.6
+  },
+  "training": {
+    "reward_first_5_mean": 304.944,
+    "reward_last_5_mean": 313.408
+  }
+}
