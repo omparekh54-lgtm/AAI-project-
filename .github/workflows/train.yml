@@ -9,9 +9,9 @@ on:
         default: '360'
         type: string
       evaluation_episodes:
-        description: Held-out full-day evaluation episodes
+        description: Held-out seeds per fleet size
         required: true
-        default: '20'
+        default: '5'
         type: string
   push:
     paths:
@@ -27,21 +27,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: pip install -r requirements.txt
-
       - name: Train DQN for 360 full-day episodes
-        run: python -m backend.train --episodes ${{ inputs.episodes || '360' }} --seed 42
-
-      - name: Run held-out full-day benchmark
-        run: python -m backend.experiment --episodes ${{ inputs.evaluation_episodes || '20' }}
-
+        run: python -m backend.train --episodes ${{ inputs.episodes || '360' }} --seed 42 --day-minutes 1440 --fleet-size 8 --learn-every 4
+      - name: Run held-out full-day fleet/peak benchmark
+        run: python -m backend.experiment --episodes ${{ inputs.evaluation_episodes || '5' }} --fleet-sizes 4,8,12,16 --day-minutes 1440
       - name: Upload model and experiment results
         uses: actions/upload-artifact@v4
         with:
@@ -50,11 +45,10 @@ jobs:
             models/dqn_latest.pt
             results/*.json
             results/*.csv
-
       - name: Publish experiment outputs to repository
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add models/dqn_latest.pt results/*.json results/*.csv
-          git diff --cached --quiet || git commit -m "Publish 360-episode full-day DQN benchmark"
+          git diff --cached --quiet || git commit -m "Publish full-day DQN benchmark"
           git push
