@@ -1,1 +1,1 @@
-Run the final full-day DQN training and held-out fleet/peak benchmark. Refresh this marker whenever the benchmark should be rerun.
+Final benchmark trigger 2026-09-22: 360 full-day DQN episodes, 5 held-out seeds, fleet sweep 4/8/12/16, peak/off-peak analysis.
