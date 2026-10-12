@@ -11,7 +11,7 @@ on:
       evaluation_episodes:
         description: Held-out seeds per fleet size
         required: true
-        default: '5'
+        default: '20'
         type: string
   push:
     paths:
@@ -35,20 +35,24 @@ jobs:
         run: pip install -r requirements.txt
       - name: Train DQN for 360 full-day episodes
         run: OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m backend.train --episodes ${{ inputs.episodes || '360' }} --seed 42 --day-minutes 1440 --fleet-size 8 --learn-every 4
+      - name: Fit demand forecast on training days
+        run: python -m backend.coordination.predictive --seed-start 42 --days 130
       - name: Run held-out full-day fleet/peak benchmark
-        run: OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m backend.experiment --episodes ${{ inputs.evaluation_episodes || '5' }} --fleet-sizes 4,8,12,16 --day-minutes 1440
+        run: OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m backend.compare_improvements --episodes ${{ inputs.evaluation_episodes || '20' }}
       - name: Upload model and experiment results
         uses: actions/upload-artifact@v4
         with:
           name: aai-training-results
           path: |
             models/dqn_latest.pt
+            models/demand_forecast.json
             results/*.json
             results/*.csv
+            results/improvement_summary.md
       - name: Publish experiment outputs to repository
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f models/dqn_latest.pt results/experiment_results.json results/experiment_results.csv results/training_curve.json
+          git add -f models/dqn_latest.pt models/demand_forecast.json results/experiment_results.json results/experiment_results.csv results/training_curve.json results/improvement_review.json results/improvement_summary.md
           git diff --cached --quiet || git commit -m "Publish full-day DQN benchmark"
           git push

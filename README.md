@@ -60,7 +60,7 @@ python -m backend.demo
 
 ## Train the proposed DQN
 
-The training workflow defaults to 360 complete simulated days. The committed validation run uses 30 days; it is not evidence of convergence:
+The training workflow defaults to 360 complete simulated days. The committed validation run uses 120 days; it is not evidence of convergence:
 
 ```bash
 python -m backend.train --episodes 360 --day-minutes 1440 --fleet-size 8 --learn-every 4
@@ -161,3 +161,69 @@ Validation: `python -m pytest -q` exercises timing, sensing, assignment,
 timeouts, accounting and DQN/VDN target masking. A short training run and
 held-out benchmark verify execution, not superiority or convergence. Run the
 360-day workflow and assess learning curves before making final claims.
+
+
+## Predictive coordinated dispatch extension
+
+The proposed operational improvement is `Predictive Coordinated Dispatch`.
+It adds a central coordination layer to the original local DQN research core.
+This extension is forecast plus optimisation, not a renamed RL algorithm. The
+original parameter-shared DQN remains a separate comparison. Strictly local,
+decentralised execution remains a limitation/future extension of this planner.
+
+1. Fit smoothed hourly zone-arrival rates using training demand days only.
+2. Jointly match available cabs to current requests: maximise the number of
+   feasible matches, then minimise pickup cost with a small age priority.
+3. Idle cab agents propose adjacent moves or waiting. Sequential reservations
+   account for peers' planned positions, reducing clustering. Choose moves
+   that improve forecast-weighted pickup coverage enough to offset movement.
+4. Advance the same one-minute simulator with the same radius, fleet, shift,
+   timeout, fares and demand sequence used by every baseline.
+
+The model never reads the evaluated day's future demand. The forecast uses
+seeds 42–171. Movement cost 0.05 minimised the validation score `avg_wait + empty_distance / 2000` (an explicit synthetic trade-off, not a fuel-price estimate). It was selected on validation seeds
+200000–200004, separately from new held-out seeds 300000 onward. The previous
+100000-series test was not reused for these improvement claims. Baseline
+matching and forecast coordination both have central information. Plain DQN
+retains local information, so the comparison cannot isolate the effect of RL
+versus extra information. `Coordinated Matching` is the no-repositioning
+ablation. The `Zone Balancing` baseline is unchanged.
+
+DQN training also changed: exploration now decays over training episodes,
+and off-shift forced-WAIT transitions do not fill replay or consume learning
+updates. This fixes the original exploration collapse before the first shift.
+
+Reproduce the extension and the fresh evaluation:
+
+```bash
+python -m backend.coordination.predictive --seed-start 42 --days 130
+python -m backend.tune_coordination  # optional: reproduce validation selection
+OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m backend.train --episodes 120
+OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m backend.compare_improvements --episodes 20
+```
+
+The final command produces full-day, 4/8/12/16-cab benchmarks for five methods,
+peak/off-peak metrics, per-seed results, paired 95% t intervals, and an 8-cab
+stress test with 1.5× arrival probabilities. Results are conditional on one
+training run and synthetic demand. Confidence intervals reflect variability
+across demand days, not model-training restarts. Overnight shift restrictions
+limit the maximum full-day service rate for all methods. A lower wait among
+served riders alone is not proof of a better service: compare service rate,
+cancellations, earnings and empty driving together.
+
+Background sources (design context, not evidence for our measured gains):
+
+- Lin et al., KDD 2018, [Efficient Large-Scale Fleet Management via Multi-Agent
+  Deep Reinforcement Learning](https://www.kdd.org/kdd2018/accepted-papers/view/efficient-large-scale-fleet-management-via-multi-agent-deep-reinforcement-l).
+- [SciPy linear assignment documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.linear_sum_assignment.html), used for the joint matching solver.
+
+
+The measured comparison, uncertainty and scaling trade-offs are in
+[results/improvement_summary.md](results/improvement_summary.md), generated
+from the recorded JSON outputs. Improvement claims apply to the forecast
+coordination extension. They do not establish DQN superiority or universal
+dominance: nearest-cab dispatch uses less empty driving, and zone balancing
+has lower wait at 16 cabs. The 8-cab pilot shows the intended wait/empty-driving
+improvements against zone balancing, while its service-rate difference is
+not statistically established. The higher-demand stress scenario supports
+lower wait and lower empty distance against zone balancing without refitting.

@@ -10,6 +10,7 @@ from .agents.dqn import SharedDQNAgent
 from .baselines.nearest_cab import nearest_cab_policy
 from .baselines.zone_balancing import zone_balancing_policy
 from .environment.simulator import CabDispatchEnv
+from .coordination.predictive import DemandForecast, PredictiveDispatchPolicy, coordinated_matching
 
 METRICS = ('service_rate', 'cancellation_rate', 'avg_wait', 'avg_pickup_distance',
            'empty_distance', 'empty_driving_ratio', 'utilisation', 'earnings', 'earnings_fairness')
@@ -57,12 +58,18 @@ def period_metrics(env, peak):
             'avg_wait': sum(r.wait_minutes for r in picked) / max(1, len(picked))}
 
 
-def main(evaluation_episodes=20, fleet_sizes=(4, 8, 12, 16), day_minutes=1440, model='models/dqn_latest.pt'):
+def main(evaluation_episodes=20, fleet_sizes=(4, 8, 12, 16), day_minutes=1440, model='models/dqn_latest.pt', forecast='models/demand_forecast.json', evaluation_seed_start=300000):
     if evaluation_episodes < 1:
         raise ValueError('At least one evaluation seed is required')
     # Kept disjoint from the configured training seed range and recorded explicitly.
-    seeds = list(range(100000, 100000 + evaluation_episodes))
+    seeds = list(range(evaluation_seed_start, evaluation_seed_start + evaluation_episodes))
     methods = [('Nearest Cab', nearest_cab_policy), ('Zone Balancing', zone_balancing_policy)]
+    if os.path.exists(forecast):
+        demand_forecast = DemandForecast.load(forecast)
+        if set(seeds) & set(demand_forecast.training_seeds):
+            raise ValueError('Forecast training and evaluation seeds overlap')
+        methods += [('Coordinated Matching', coordinated_matching),
+                    ('Predictive Coordinated Dispatch', PredictiveDispatchPolicy(demand_forecast, movement_cost=0.05))]
     checkpoint = None
     if os.path.exists(model):
         checkpoint = torch.load(model, map_location='cpu', weights_only=True)
@@ -93,6 +100,10 @@ def main(evaluation_episodes=20, fleet_sizes=(4, 8, 12, 16), day_minutes=1440, m
                                     **aggregate(values, ('service_rate', 'cancellation_rate', 'avg_wait'))})
     payload = {'metadata': {'simulator_version': 2,
                            'training_episodes': checkpoint['episodes'] if checkpoint else 0,
+                           'forecast_training_seeds': demand_forecast.training_seeds if os.path.exists(forecast) else [],
+                           'validation_seeds': list(range(200000, 200005)),
+                           'movement_cost': 0.05,
+                           'forecast_sha256': hashlib.sha256(open(forecast, 'rb').read()).hexdigest() if os.path.exists(forecast) else None,
                            'training_day_minutes': checkpoint['day_minutes'] if checkpoint else None,
                            'model_sha256': hashlib.sha256(open(model, 'rb').read()).hexdigest() if checkpoint else None,
                            'evaluation_episodes': evaluation_episodes, 'evaluation_seeds': seeds,
@@ -116,5 +127,7 @@ if __name__ == '__main__':
     parser.add_argument('--fleet-sizes', default='4,8,12,16')
     parser.add_argument('--day-minutes', type=int, default=1440)
     parser.add_argument('--model', default='models/dqn_latest.pt')
+    parser.add_argument('--forecast', default='models/demand_forecast.json')
+    parser.add_argument('--seed-start', type=int, default=300000)
     args = parser.parse_args()
-    main(args.episodes, tuple(int(x) for x in args.fleet_sizes.split(',')), args.day_minutes, args.model)
+    main(args.episodes, tuple(int(x) for x in args.fleet_sizes.split(',')), args.day_minutes, args.model, args.forecast, args.seed_start)

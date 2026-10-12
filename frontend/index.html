@@ -23,7 +23,7 @@
         <div class="hero-card"><div class="hero-number" id="episodeValue">—</div><div>measured training episodes</div><div class="mini-progress"><span></span></div><small>Measured benchmark pipeline</small></div>
       </section>
       <section class="control-panel panel">
-        <div class="control"><label>Algorithm</label><select id="algorithm"><option>DQN</option><option>Nearest Cab</option><option>Zone Balancing</option></select></div>
+        <div class="control"><label>Algorithm</label><select id="algorithm"><option>Predictive Coordinated Dispatch</option><option>DQN</option><option>Nearest Cab</option><option>Zone Balancing</option></select></div>
         <div class="control"><label>Fleet size</label><input id="fleet" type="range" min="4" max="12" value="8"><b id="fleetValue">8</b></div>
         <div class="control"><label>Demand</label><select id="demand"><option>Normal</option><option>Peak</option><option>Airport-heavy</option></select></div>
         <div class="control"><label>Speed</label><select id="speed"><option value="700">1×</option><option value="350">2×</option><option value="120">5×</option></select></div>
@@ -54,7 +54,7 @@
       </section>
       <section class="research-grid">
         <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">TRAINING</p><h2>DQN reward trajectory</h2></div><span class="chart-note">Training data loading</span></div><canvas id="rewardChart"></canvas></div>
-        <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">BENCHMARK</p><h2>DQN vs baselines</h2></div><span class="chart-note">8-cab held-out results</span></div><div id="barChart" class="bar-chart"></div></div>
+        <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">BENCHMARK</p><h2>Rider wait by method</h2></div><span class="chart-note">8-cab held-out results · lower is better</span></div><div id="barChart" class="bar-chart"></div></div>
       </section>
     </main>
     <footer>CabMind · AAI Project · Multi-Agent Cab Dispatch using Reinforcement Learning</footer>

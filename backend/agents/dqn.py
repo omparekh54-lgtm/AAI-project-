@@ -76,5 +76,4 @@ class SharedDQNAgent:
         self.learn_steps += 1
         if self.learn_steps % self.target_update == 0:
             self.target.load_state_dict(self.policy.state_dict())
-        self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
         return float(loss.item())

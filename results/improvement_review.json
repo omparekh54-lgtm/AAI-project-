@@ -1,0 +1,2052 @@
+{
+  "normal_scenario_paired_comparisons": [
+    {
+      "fleet_size": 4,
+      "baseline": "Nearest Cab",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.07594880197986639,
+        "ci95_low": 0.06920826236615094,
+        "ci95_high": 0.08268934159358185
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.07594880197986639,
+        "ci95_low": -0.08268934159358185,
+        "ci95_high": -0.06920826236615094
+      },
+      "avg_wait": {
+        "mean_delta": -0.9323600834285284,
+        "ci95_low": -1.0243121587650093,
+        "ci95_high": -0.8404080080920475
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.137779945413184,
+        "ci95_low": -0.16784364870319346,
+        "ci95_high": -0.10771624212317454
+      },
+      "empty_distance": {
+        "mean_delta": 459.75,
+        "ci95_low": 437.71176233580684,
+        "ci95_high": 481.78823766419316
+      },
+      "empty_driving_ratio": {
+        "mean_delta": 0.0680708727448704,
+        "ci95_low": 0.06322505590381171,
+        "ci95_high": 0.0729166895859291
+      },
+      "utilisation": {
+        "mean_delta": 0.03926215277777777,
+        "ci95_low": 0.03487520873503924,
+        "ci95_high": 0.04364909682051629
+      },
+      "earnings": {
+        "mean_delta": 1138.2,
+        "ci95_low": 1038.0867546959928,
+        "ci95_high": 1238.3132453040073
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.028767404827033122,
+        "ci95_low": 0.01789568800975902,
+        "ci95_high": 0.039639121644307225
+      }
+    },
+    {
+      "fleet_size": 4,
+      "baseline": "Zone Balancing",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.02951112247758812,
+        "ci95_low": 0.02557079150814256,
+        "ci95_high": 0.03345145344703368
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.02951112247758809,
+        "ci95_low": -0.033451453447033645,
+        "ci95_high": -0.02557079150814254
+      },
+      "avg_wait": {
+        "mean_delta": -0.9668461439261531,
+        "ci95_low": -1.048832126852756,
+        "ci95_high": -0.8848601609995502
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.16550001240764042,
+        "ci95_low": -0.1911173893290728,
+        "ci95_high": -0.13988263548620805
+      },
+      "empty_distance": {
+        "mean_delta": -40.35,
+        "ci95_low": -53.67621848610848,
+        "ci95_high": -27.02378151389152
+      },
+      "empty_driving_ratio": {
+        "mean_delta": -0.01627360093855023,
+        "ci95_low": -0.01960017251361544,
+        "ci95_high": -0.012947029363485017
+      },
+      "utilisation": {
+        "mean_delta": 0.003498263888888889,
+        "ci95_low": 0.0010279409869070719,
+        "ci95_high": 0.005968586790870705
+      },
+      "earnings": {
+        "mean_delta": 421.85,
+        "ci95_low": 359.14557852660477,
+        "ci95_high": 484.5544214733953
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.026169038324262112,
+        "ci95_low": 0.017188695052543047,
+        "ci95_high": 0.035149381595981175
+      }
+    },
+    {
+      "fleet_size": 4,
+      "baseline": "Coordinated Matching",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.05758591453867405,
+        "ci95_low": 0.05242797680965251,
+        "ci95_high": 0.06274385226769559
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.05758591453867405,
+        "ci95_low": -0.06274385226769559,
+        "ci95_high": -0.05242797680965251
+      },
+      "avg_wait": {
+        "mean_delta": -0.027186348995284538,
+        "ci95_low": -0.07708467614802397,
+        "ci95_high": 0.022711978157454894
+      },
+      "avg_pickup_distance": {
+        "mean_delta": 0.07036212215929902,
+        "ci95_low": 0.04668342444986823,
+        "ci95_high": 0.09404081986872981
+      },
+      "empty_distance": {
+        "mean_delta": 540.9,
+        "ci95_low": 522.3464991484024,
+        "ci95_high": 559.4535008515976
+      },
+      "empty_driving_ratio": {
+        "mean_delta": 0.09342412786959695,
+        "ci95_low": 0.08980203849729602,
+        "ci95_high": 0.09704621724189787
+      },
+      "utilisation": {
+        "mean_delta": 0.04672743055555556,
+        "ci95_low": 0.04317843662009474,
+        "ci95_high": 0.05027642449101638
+      },
+      "earnings": {
+        "mean_delta": 892.25,
+        "ci95_low": 826.8465234878818,
+        "ci95_high": 957.6534765121182
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.009823567359283508,
+        "ci95_low": 0.002279683140603197,
+        "ci95_high": 0.017367451577963818
+      }
+    },
+    {
+      "fleet_size": 4,
+      "baseline": "Parameter-shared DQN",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.32229938258080926,
+        "ci95_low": 0.31011578370193144,
+        "ci95_high": 0.3344829814596871
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.32229938258080915,
+        "ci95_low": -0.33448298145968697,
+        "ci95_high": -0.3101157837019313
+      },
+      "avg_wait": {
+        "mean_delta": 0.725887725573045,
+        "ci95_low": 0.6430500624804635,
+        "ci95_high": 0.8087253886656266
+      },
+      "avg_pickup_distance": {
+        "mean_delta": 1.010887228791232,
+        "ci95_low": 0.9847142811849073,
+        "ci95_high": 1.0370601763975569
+      },
+      "empty_distance": {
+        "mean_delta": 447.25,
+        "ci95_low": 402.5630077056948,
+        "ci95_high": 491.9369922943052
+      },
+      "empty_driving_ratio": {
+        "mean_delta": -0.04978553909821546,
+        "ci95_low": -0.06475559776777648,
+        "ci95_high": -0.03481548042865444
+      },
+      "utilisation": {
+        "mean_delta": 0.2720225694444445,
+        "ci95_low": 0.26618777659812903,
+        "ci95_high": 0.2778573622907599
+      },
+      "earnings": {
+        "mean_delta": 4811.75,
+        "ci95_low": 4673.723883307773,
+        "ci95_high": 4949.776116692227
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.11869397235324972,
+        "ci95_low": 0.10121442993383692,
+        "ci95_high": 0.1361735147726625
+      }
+    },
+    {
+      "fleet_size": 8,
+      "baseline": "Nearest Cab",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.035071879170694494,
+        "ci95_low": 0.029078830149540855,
+        "ci95_high": 0.04106492819184813
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.0350718791706945,
+        "ci95_low": -0.04106492819184814,
+        "ci95_high": -0.02907883014954086
+      },
+      "avg_wait": {
+        "mean_delta": -0.8777069228378954,
+        "ci95_low": -0.9304204668640134,
+        "ci95_high": -0.8249933788117775
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.42213390731085576,
+        "ci95_low": -0.44618203375625043,
+        "ci95_high": -0.3980857808654611
+      },
+      "empty_distance": {
+        "mean_delta": 604.85,
+        "ci95_low": 582.3113919628867,
+        "ci95_high": 627.3886080371134
+      },
+      "empty_driving_ratio": {
+        "mean_delta": 0.10652826982230965,
+        "ci95_low": 0.10315462594384368,
+        "ci95_high": 0.10990191370077561
+      },
+      "utilisation": {
+        "mean_delta": -0.010195312500000003,
+        "ci95_low": -0.013136763936461914,
+        "ci95_high": -0.007253861063538091
+      },
+      "earnings": {
+        "mean_delta": 557.8,
+        "ci95_low": 458.2966173589653,
+        "ci95_high": 657.3033826410347
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.1145055834805307,
+        "ci95_low": 0.099051554728156,
+        "ci95_high": 0.12995961223290542
+      }
+    },
+    {
+      "fleet_size": 8,
+      "baseline": "Zone Balancing",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.0006899953804338444,
+        "ci95_low": -4.981777911968908e-05,
+        "ci95_high": 0.0014298085399873778
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.0006899953804338346,
+        "ci95_low": -0.0014298085399873659,
+        "ci95_high": 4.981777911969678e-05
+      },
+      "avg_wait": {
+        "mean_delta": -0.2659160497867904,
+        "ci95_low": -0.30029254848745435,
+        "ci95_high": -0.23153955108612642
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.16659590255618403,
+        "ci95_low": -0.18739730157955856,
+        "ci95_high": -0.1457945035328095
+      },
+      "empty_distance": {
+        "mean_delta": -665.75,
+        "ci95_low": -696.5169945998753,
+        "ci95_high": -634.9830054001247
+      },
+      "empty_driving_ratio": {
+        "mean_delta": -0.09079559216625538,
+        "ci95_low": -0.09463327993627611,
+        "ci95_high": -0.08695790439623464
+      },
+      "utilisation": {
+        "mean_delta": -0.008619791666666668,
+        "ci95_low": -0.009735046603530266,
+        "ci95_high": -0.00750453672980307
+      },
+      "earnings": {
+        "mean_delta": 10.85,
+        "ci95_low": -0.4317838753305274,
+        "ci95_high": 22.131783875330527
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.1556081614907913,
+        "ci95_low": 0.1365413521893088,
+        "ci95_high": 0.1746749707922738
+      }
+    },
+    {
+      "fleet_size": 8,
+      "baseline": "Coordinated Matching",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.03437519694393581,
+        "ci95_low": 0.02831506784691548,
+        "ci95_high": 0.040435326040956135
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.034375196943935794,
+        "ci95_low": -0.04043532604095612,
+        "ci95_high": -0.028315067846915464
+      },
+      "avg_wait": {
+        "mean_delta": -0.8082100407558184,
+        "ci95_low": -0.8523250488873734,
+        "ci95_high": -0.7640950326242634
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.3981482993802321,
+        "ci95_low": -0.4194113035202983,
+        "ci95_high": -0.3768852952401659
+      },
+      "empty_distance": {
+        "mean_delta": 618.15,
+        "ci95_low": 597.1975878981663,
+        "ci95_high": 639.1024121018337
+      },
+      "empty_driving_ratio": {
+        "mean_delta": 0.10979479133793406,
+        "ci95_low": 0.10674599789429697,
+        "ci95_high": 0.11284358478157115
+      },
+      "utilisation": {
+        "mean_delta": -0.009175347222222222,
+        "ci95_low": -0.01185048795977048,
+        "ci95_high": -0.006500206484673964
+      },
+      "earnings": {
+        "mean_delta": 548.15,
+        "ci95_low": 450.93949183380954,
+        "ci95_high": 645.3605081661905
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.028962495916422616,
+        "ci95_low": 0.01609535355180966,
+        "ci95_high": 0.04182963828103557
+      }
+    },
+    {
+      "fleet_size": 8,
+      "baseline": "Parameter-shared DQN",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.23097041451901842,
+        "ci95_low": 0.21657900406052744,
+        "ci95_high": 0.2453618249775094
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.2309704145190185,
+        "ci95_low": -0.2453618249775095,
+        "ci95_high": -0.21657900406052752
+      },
+      "avg_wait": {
+        "mean_delta": -0.9334676904297817,
+        "ci95_low": -0.9874996391207016,
+        "ci95_high": -0.8794357417388619
+      },
+      "avg_pickup_distance": {
+        "mean_delta": 0.3483274397570424,
+        "ci95_low": 0.3213372906411728,
+        "ci95_high": 0.375317588872912
+      },
+      "empty_distance": {
+        "mean_delta": -422.75,
+        "ci95_low": -518.9922050925937,
+        "ci95_high": -326.5077949074063
+      },
+      "empty_driving_ratio": {
+        "mean_delta": -0.14314512454168019,
+        "ci95_low": -0.15672023990593978,
+        "ci95_high": -0.1295700091774206
+      },
+      "utilisation": {
+        "mean_delta": 0.0816579861111111,
+        "ci95_low": 0.07753179502889741,
+        "ci95_high": 0.08578417719332478
+      },
+      "earnings": {
+        "mean_delta": 3450.4,
+        "ci95_low": 3253.62050282855,
+        "ci95_high": 3647.1794971714503
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.3334871169327286,
+        "ci95_low": 0.3079176782086661,
+        "ci95_high": 0.35905655565679107
+      }
+    },
+    {
+      "fleet_size": 12,
+      "baseline": "Nearest Cab",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.02433561484133604,
+        "ci95_low": 0.018715066251738882,
+        "ci95_high": 0.0299561634309332
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.024335614841336044,
+        "ci95_low": -0.0299561634309332,
+        "ci95_high": -0.01871506625173889
+      },
+      "avg_wait": {
+        "mean_delta": -0.8491502377933309,
+        "ci95_low": -0.8999343769723211,
+        "ci95_high": -0.7983660986143406
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.5479329823002086,
+        "ci95_low": -0.5667395795667056,
+        "ci95_high": -0.5291263850337116
+      },
+      "empty_distance": {
+        "mean_delta": 297.55,
+        "ci95_low": 277.8649856375556,
+        "ci95_high": 317.2350143624444
+      },
+      "empty_driving_ratio": {
+        "mean_delta": 0.06184515833115448,
+        "ci95_low": 0.05872682362841595,
+        "ci95_high": 0.06496349303389301
+      },
+      "utilisation": {
+        "mean_delta": -0.013995949074074065,
+        "ci95_low": -0.015476760174026534,
+        "ci95_high": -0.012515137974121597
+      },
+      "earnings": {
+        "mean_delta": 387.95,
+        "ci95_low": 297.942731952769,
+        "ci95_high": 477.95726804723097
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.20553316756649903,
+        "ci95_low": 0.17839794001004228,
+        "ci95_high": 0.23266839512295578
+      }
+    },
+    {
+      "fleet_size": 12,
+      "baseline": "Zone Balancing",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "cancellation_rate": {
+        "mean_delta": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "avg_wait": {
+        "mean_delta": -0.010510565988668175,
+        "ci95_low": -0.03228301695201352,
+        "ci95_high": 0.011261884974677172
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.007916823808712187,
+        "ci95_low": -0.029130490055600256,
+        "ci95_high": 0.01329684243817588
+      },
+      "empty_distance": {
+        "mean_delta": -1155.2,
+        "ci95_low": -1184.9213294544359,
+        "ci95_high": -1125.4786705455642
+      },
+      "empty_driving_ratio": {
+        "mean_delta": -0.17745160251354947,
+        "ci95_low": -0.18221055520277246,
+        "ci95_high": -0.17269264982432647
+      },
+      "utilisation": {
+        "mean_delta": -0.0002806712962962907,
+        "ci95_low": -0.0010385327110344952,
+        "ci95_high": 0.00047719011844191367
+      },
+      "earnings": {
+        "mean_delta": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.21673238295518232,
+        "ci95_low": 0.20264659575572358,
+        "ci95_high": 0.23081817015464107
+      }
+    },
+    {
+      "fleet_size": 12,
+      "baseline": "Coordinated Matching",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.022892202045879884,
+        "ci95_low": 0.01727023031688318,
+        "ci95_high": 0.028514173774876587
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.022892202045879877,
+        "ci95_low": -0.028514173774876583,
+        "ci95_high": -0.01727023031688317
+      },
+      "avg_wait": {
+        "mean_delta": -0.7949037247197295,
+        "ci95_low": -0.8475212013782459,
+        "ci95_high": -0.742286248061213
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.5246719186298123,
+        "ci95_low": -0.5454625806361486,
+        "ci95_high": -0.503881256623476
+      },
+      "empty_distance": {
+        "mean_delta": 310.05,
+        "ci95_low": 292.404406439216,
+        "ci95_high": 327.695593560784
+      },
+      "empty_driving_ratio": {
+        "mean_delta": 0.06549922701350276,
+        "ci95_low": 0.06271140714291266,
+        "ci95_high": 0.06828704688409286
+      },
+      "utilisation": {
+        "mean_delta": -0.013495370370370366,
+        "ci95_low": -0.014954230892757816,
+        "ci95_high": -0.012036509847982916
+      },
+      "earnings": {
+        "mean_delta": 365.9,
+        "ci95_low": 278.8309275552656,
+        "ci95_high": 452.96907244473437
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.041142193170325636,
+        "ci95_low": 0.02334337891605714,
+        "ci95_high": 0.05894100742459413
+      }
+    },
+    {
+      "fleet_size": 12,
+      "baseline": "Parameter-shared DQN",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.17268156780889937,
+        "ci95_low": 0.15765091166341874,
+        "ci95_high": 0.18771222395438
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.17268156780889937,
+        "ci95_low": -0.18771222395438,
+        "ci95_high": -0.15765091166341874
+      },
+      "avg_wait": {
+        "mean_delta": -1.0091690552647883,
+        "ci95_low": -1.067617696360176,
+        "ci95_high": -0.9507204141694005
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.024244347591723687,
+        "ci95_low": -0.04279378966701499,
+        "ci95_high": -0.005694905516432383
+      },
+      "empty_distance": {
+        "mean_delta": -1884.55,
+        "ci95_low": -2115.2313814067397,
+        "ci95_high": -1653.8686185932604
+      },
+      "empty_driving_ratio": {
+        "mean_delta": -0.2993214233474365,
+        "ci95_low": -0.3210115471389163,
+        "ci95_high": -0.2776312995559567
+      },
+      "utilisation": {
+        "mean_delta": 0.029866898148148153,
+        "ci95_low": 0.02738756725147735,
+        "ci95_high": 0.03234622904481896
+      },
+      "earnings": {
+        "mean_delta": 2540.8,
+        "ci95_low": 2341.7050166211648,
+        "ci95_high": 2739.8949833788356
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.5069593605418421,
+        "ci95_low": 0.4744661000631972,
+        "ci95_high": 0.539452621020487
+      }
+    },
+    {
+      "fleet_size": 16,
+      "baseline": "Nearest Cab",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.02046240010551222,
+        "ci95_low": 0.01468671856600955,
+        "ci95_high": 0.02623808164501489
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.02046240010551222,
+        "ci95_low": -0.026238081645014896,
+        "ci95_high": -0.014686718566009543
+      },
+      "avg_wait": {
+        "mean_delta": -0.7958882115324613,
+        "ci95_low": -0.8404093997377277,
+        "ci95_high": -0.7513670233271948
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.5640454585221784,
+        "ci95_low": -0.584169907225387,
+        "ci95_high": -0.5439210098189697
+      },
+      "empty_distance": {
+        "mean_delta": 181.95,
+        "ci95_low": 163.45464022752302,
+        "ci95_high": 200.44535977247696
+      },
+      "empty_driving_ratio": {
+        "mean_delta": 0.04001540611752462,
+        "ci95_low": 0.03645439800897411,
+        "ci95_high": 0.043576414226075125
+      },
+      "utilisation": {
+        "mean_delta": -0.011625434027777779,
+        "ci95_low": -0.012714838786743355,
+        "ci95_high": -0.010536029268812202
+      },
+      "earnings": {
+        "mean_delta": 328.05,
+        "ci95_low": 234.9932745493743,
+        "ci95_high": 421.10672545062573
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.29279576600325713,
+        "ci95_low": 0.2627124772687132,
+        "ci95_high": 0.32287905473780104
+      }
+    },
+    {
+      "fleet_size": 16,
+      "baseline": "Zone Balancing",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "cancellation_rate": {
+        "mean_delta": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "avg_wait": {
+        "mean_delta": 0.10608467833306681,
+        "ci95_low": 0.08628638123066375,
+        "ci95_high": 0.12588297543546986
+      },
+      "avg_pickup_distance": {
+        "mean_delta": 0.104783931581435,
+        "ci95_low": 0.08525219899736437,
+        "ci95_high": 0.12431566416550562
+      },
+      "empty_distance": {
+        "mean_delta": -1312.85,
+        "ci95_low": -1348.280193855069,
+        "ci95_high": -1277.4198061449308
+      },
+      "empty_driving_ratio": {
+        "mean_delta": -0.21478575277029877,
+        "ci95_low": -0.22001805588289208,
+        "ci95_high": -0.20955344965770545
+      },
+      "utilisation": {
+        "mean_delta": 0.002777777777777779,
+        "ci95_low": 0.00227556141622496,
+        "ci95_high": 0.0032799941393305983
+      },
+      "earnings": {
+        "mean_delta": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.2921171838594653,
+        "ci95_low": 0.27185926035621827,
+        "ci95_high": 0.3123751073627123
+      }
+    },
+    {
+      "fleet_size": 16,
+      "baseline": "Coordinated Matching",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.019552968114559914,
+        "ci95_low": 0.014205643781825603,
+        "ci95_high": 0.024900292447294227
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.019552968114559914,
+        "ci95_low": -0.024900292447294227,
+        "ci95_high": -0.014205643781825601
+      },
+      "avg_wait": {
+        "mean_delta": -0.7546289937777205,
+        "ci95_low": -0.7986061280337874,
+        "ci95_high": -0.7106518595216537
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.5415772273818884,
+        "ci95_low": -0.5607295301189099,
+        "ci95_high": -0.5224249246448669
+      },
+      "empty_distance": {
+        "mean_delta": 194.8,
+        "ci95_low": 176.97427347611267,
+        "ci95_high": 212.62572652388735
+      },
+      "empty_driving_ratio": {
+        "mean_delta": 0.04366811203093148,
+        "ci95_low": 0.04048879396397517,
+        "ci95_high": 0.04684743009788779
+      },
+      "utilisation": {
+        "mean_delta": -0.011171875000000001,
+        "ci95_low": -0.01214497424573379,
+        "ci95_high": -0.010198775754266212
+      },
+      "earnings": {
+        "mean_delta": 314.35,
+        "ci95_low": 228.16840272771657,
+        "ci95_high": 400.5315972722835
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.03655151528433393,
+        "ci95_low": 0.007913862737393643,
+        "ci95_high": 0.06518916783127422
+      }
+    },
+    {
+      "fleet_size": 16,
+      "baseline": "Parameter-shared DQN",
+      "paired_seeds": 20,
+      "service_rate": {
+        "mean_delta": 0.14105322447192556,
+        "ci95_low": 0.12620530664093135,
+        "ci95_high": 0.15590114230291977
+      },
+      "cancellation_rate": {
+        "mean_delta": -0.14105322447192553,
+        "ci95_low": -0.15590114230291974,
+        "ci95_high": -0.12620530664093133
+      },
+      "avg_wait": {
+        "mean_delta": -0.9492126945449334,
+        "ci95_low": -1.0252989955423724,
+        "ci95_high": -0.8731263935474944
+      },
+      "avg_pickup_distance": {
+        "mean_delta": -0.1461620190797151,
+        "ci95_low": -0.16112463244253272,
+        "ci95_high": -0.13119940571689748
+      },
+      "empty_distance": {
+        "mean_delta": -3052.1,
+        "ci95_low": -3415.6060107259273,
+        "ci95_high": -2688.5939892740726
+      },
+      "empty_driving_ratio": {
+        "mean_delta": -0.39119932543566754,
+        "ci95_low": -0.4152876634920515,
+        "ci95_high": -0.3671109873792836
+      },
+      "utilisation": {
+        "mean_delta": 0.01482204861111111,
+        "ci95_low": 0.013007059066589869,
+        "ci95_high": 0.016637038155632354
+      },
+      "earnings": {
+        "mean_delta": 2069.8,
+        "ci95_low": 1871.755667774327,
+        "ci95_high": 2267.8443322256735
+      },
+      "earnings_fairness": {
+        "mean_delta": 0.585333098821732,
+        "ci95_low": 0.5439852996670487,
+        "ci95_high": 0.6266808979764154
+      }
+    }
+  ],
+  "stress_test": {
+    "scenario": "1.5x arrival probabilities after minute zero; no retraining",
+    "raw_results": [
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400000,
+        "minutes": 1440,
+        "requests": 1108,
+        "completed": 906,
+        "cancelled": 197,
+        "pending": 5,
+        "service_rate": 0.8176895306859205,
+        "cancellation_rate": 0.17779783393501805,
+        "avg_wait": 2.835540838852097,
+        "avg_pickup_distance": 1.750551876379691,
+        "empty_distance": 1586,
+        "empty_driving_ratio": 0.33665888346423267,
+        "utilisation": 0.4089409722222222,
+        "earnings": 18435.0,
+        "earnings_fairness": 0.8955221835856818
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400001,
+        "minutes": 1440,
+        "requests": 1092,
+        "completed": 877,
+        "cancelled": 212,
+        "pending": 3,
+        "service_rate": 0.8031135531135531,
+        "cancellation_rate": 0.19413919413919414,
+        "avg_wait": 2.7069555302166477,
+        "avg_pickup_distance": 1.6579247434435576,
+        "empty_distance": 1454,
+        "empty_driving_ratio": 0.32948107863131654,
+        "utilisation": 0.38307291666666665,
+        "earnings": 17647.0,
+        "earnings_fairness": 0.8973135440233285
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400002,
+        "minutes": 1440,
+        "requests": 1041,
+        "completed": 835,
+        "cancelled": 198,
+        "pending": 8,
+        "service_rate": 0.8021133525456292,
+        "cancellation_rate": 0.19020172910662825,
+        "avg_wait": 2.704191616766467,
+        "avg_pickup_distance": 1.7077844311377246,
+        "empty_distance": 1426,
+        "empty_driving_ratio": 0.3319366852886406,
+        "utilisation": 0.3729166666666667,
+        "earnings": 16960.0,
+        "earnings_fairness": 0.8898819769697802
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400003,
+        "minutes": 1440,
+        "requests": 1065,
+        "completed": 892,
+        "cancelled": 169,
+        "pending": 4,
+        "service_rate": 0.8375586854460094,
+        "cancellation_rate": 0.15868544600938966,
+        "avg_wait": 2.6614349775784754,
+        "avg_pickup_distance": 1.7141255605381165,
+        "empty_distance": 1529,
+        "empty_driving_ratio": 0.3356750823271131,
+        "utilisation": 0.3953993055555556,
+        "earnings": 17998.0,
+        "earnings_fairness": 0.8746033443030488
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400004,
+        "minutes": 1440,
+        "requests": 1116,
+        "completed": 883,
+        "cancelled": 227,
+        "pending": 6,
+        "service_rate": 0.7912186379928315,
+        "cancellation_rate": 0.20340501792114696,
+        "avg_wait": 2.936579841449604,
+        "avg_pickup_distance": 1.7417893544733862,
+        "empty_distance": 1538,
+        "empty_driving_ratio": 0.3378734622144112,
+        "utilisation": 0.3951388888888889,
+        "earnings": 17872.0,
+        "earnings_fairness": 0.9138029207772135
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400005,
+        "minutes": 1440,
+        "requests": 1092,
+        "completed": 932,
+        "cancelled": 155,
+        "pending": 5,
+        "service_rate": 0.8534798534798534,
+        "cancellation_rate": 0.14194139194139194,
+        "avg_wait": 3.092274678111588,
+        "avg_pickup_distance": 1.747854077253219,
+        "empty_distance": 1629,
+        "empty_driving_ratio": 0.33873986275733,
+        "utilisation": 0.41744791666666664,
+        "earnings": 18860.0,
+        "earnings_fairness": 0.916349475947827
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400006,
+        "minutes": 1440,
+        "requests": 1073,
+        "completed": 892,
+        "cancelled": 177,
+        "pending": 4,
+        "service_rate": 0.8313140726933831,
+        "cancellation_rate": 0.16495806150978565,
+        "avg_wait": 2.719730941704036,
+        "avg_pickup_distance": 1.7051569506726458,
+        "empty_distance": 1521,
+        "empty_driving_ratio": 0.33635559486952676,
+        "utilisation": 0.39253472222222224,
+        "earnings": 17923.0,
+        "earnings_fairness": 0.8908984509664044
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400007,
+        "minutes": 1440,
+        "requests": 1068,
+        "completed": 904,
+        "cancelled": 156,
+        "pending": 8,
+        "service_rate": 0.846441947565543,
+        "cancellation_rate": 0.14606741573033707,
+        "avg_wait": 2.7444690265486726,
+        "avg_pickup_distance": 1.6504424778761062,
+        "empty_distance": 1492,
+        "empty_driving_ratio": 0.32498366368982795,
+        "utilisation": 0.39852430555555557,
+        "earnings": 18337.0,
+        "earnings_fairness": 0.8995383189797415
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400008,
+        "minutes": 1440,
+        "requests": 1091,
+        "completed": 889,
+        "cancelled": 197,
+        "pending": 5,
+        "service_rate": 0.8148487626031164,
+        "cancellation_rate": 0.18056828597616864,
+        "avg_wait": 2.8706411698537684,
+        "avg_pickup_distance": 1.7390326209223848,
+        "empty_distance": 1546,
+        "empty_driving_ratio": 0.3452434122376061,
+        "utilisation": 0.38871527777777776,
+        "earnings": 17686.0,
+        "earnings_fairness": 0.9190554599437102
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400009,
+        "minutes": 1440,
+        "requests": 1099,
+        "completed": 894,
+        "cancelled": 202,
+        "pending": 3,
+        "service_rate": 0.813466787989081,
+        "cancellation_rate": 0.18380345768880801,
+        "avg_wait": 3.1957494407158835,
+        "avg_pickup_distance": 1.696868008948546,
+        "empty_distance": 1517,
+        "empty_driving_ratio": 0.33245671707210167,
+        "utilisation": 0.39609375,
+        "earnings": 18078.0,
+        "earnings_fairness": 0.8808037435732341
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400010,
+        "minutes": 1440,
+        "requests": 1145,
+        "completed": 933,
+        "cancelled": 206,
+        "pending": 6,
+        "service_rate": 0.8148471615720524,
+        "cancellation_rate": 0.1799126637554585,
+        "avg_wait": 2.9206859592711685,
+        "avg_pickup_distance": 1.7095391211146838,
+        "empty_distance": 1595,
+        "empty_driving_ratio": 0.3379237288135593,
+        "utilisation": 0.4097222222222222,
+        "earnings": 18705.0,
+        "earnings_fairness": 0.924087952009584
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400011,
+        "minutes": 1440,
+        "requests": 1103,
+        "completed": 902,
+        "cancelled": 196,
+        "pending": 5,
+        "service_rate": 0.8177697189483227,
+        "cancellation_rate": 0.17769718948322757,
+        "avg_wait": 2.8758314855875833,
+        "avg_pickup_distance": 1.752771618625277,
+        "empty_distance": 1581,
+        "empty_driving_ratio": 0.34399477806788514,
+        "utilisation": 0.39895833333333336,
+        "earnings": 18065.0,
+        "earnings_fairness": 0.9286560455101528
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400012,
+        "minutes": 1440,
+        "requests": 1123,
+        "completed": 922,
+        "cancelled": 200,
+        "pending": 1,
+        "service_rate": 0.8210151380231523,
+        "cancellation_rate": 0.17809439002671415,
+        "avg_wait": 3.4219088937093276,
+        "avg_pickup_distance": 1.8015184381778742,
+        "empty_distance": 1661,
+        "empty_driving_ratio": 0.3471264367816092,
+        "utilisation": 0.4153645833333333,
+        "earnings": 18592.0,
+        "earnings_fairness": 0.8876031994720148
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400013,
+        "minutes": 1440,
+        "requests": 1054,
+        "completed": 882,
+        "cancelled": 170,
+        "pending": 2,
+        "service_rate": 0.8368121442125237,
+        "cancellation_rate": 0.16129032258064516,
+        "avg_wait": 2.7755102040816326,
+        "avg_pickup_distance": 1.7426303854875282,
+        "empty_distance": 1537,
+        "empty_driving_ratio": 0.33795074758135446,
+        "utilisation": 0.39479166666666665,
+        "earnings": 17853.0,
+        "earnings_fairness": 0.9075819020920659
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400014,
+        "minutes": 1440,
+        "requests": 1076,
+        "completed": 895,
+        "cancelled": 179,
+        "pending": 2,
+        "service_rate": 0.8317843866171004,
+        "cancellation_rate": 0.16635687732342008,
+        "avg_wait": 2.5385474860335195,
+        "avg_pickup_distance": 1.68268156424581,
+        "empty_distance": 1506,
+        "empty_driving_ratio": 0.33223031105228323,
+        "utilisation": 0.39348958333333334,
+        "earnings": 18031.0,
+        "earnings_fairness": 0.9290023307358007
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400015,
+        "minutes": 1440,
+        "requests": 1049,
+        "completed": 868,
+        "cancelled": 178,
+        "pending": 3,
+        "service_rate": 0.8274547187797903,
+        "cancellation_rate": 0.16968541468064824,
+        "avg_wait": 2.7269585253456223,
+        "avg_pickup_distance": 1.6993087557603688,
+        "empty_distance": 1475,
+        "empty_driving_ratio": 0.3329571106094808,
+        "utilisation": 0.3845486111111111,
+        "earnings": 17545.0,
+        "earnings_fairness": 0.9031421285634478
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400016,
+        "minutes": 1440,
+        "requests": 1052,
+        "completed": 842,
+        "cancelled": 206,
+        "pending": 4,
+        "service_rate": 0.8003802281368821,
+        "cancellation_rate": 0.1958174904942966,
+        "avg_wait": 2.9299287410926365,
+        "avg_pickup_distance": 1.7363420427553444,
+        "empty_distance": 1462,
+        "empty_driving_ratio": 0.3386611072504054,
+        "utilisation": 0.37473958333333335,
+        "earnings": 16985.0,
+        "earnings_fairness": 0.9019775974032697
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400017,
+        "minutes": 1440,
+        "requests": 1080,
+        "completed": 859,
+        "cancelled": 218,
+        "pending": 3,
+        "service_rate": 0.7953703703703704,
+        "cancellation_rate": 0.20185185185185187,
+        "avg_wait": 3.061699650756694,
+        "avg_pickup_distance": 1.7485448195576252,
+        "empty_distance": 1502,
+        "empty_driving_ratio": 0.3401268115942029,
+        "utilisation": 0.38333333333333336,
+        "earnings": 17332.0,
+        "earnings_fairness": 0.9161518777165656
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400018,
+        "minutes": 1440,
+        "requests": 1122,
+        "completed": 917,
+        "cancelled": 203,
+        "pending": 2,
+        "service_rate": 0.8172905525846702,
+        "cancellation_rate": 0.18092691622103388,
+        "avg_wait": 3.115594329334787,
+        "avg_pickup_distance": 1.748091603053435,
+        "empty_distance": 1603,
+        "empty_driving_ratio": 0.3412816691505216,
+        "utilisation": 0.40772569444444445,
+        "earnings": 18452.0,
+        "earnings_fairness": 0.9287196926074055
+      },
+      {
+        "method": "Nearest Cab",
+        "fleet_size": 8,
+        "seed": 400019,
+        "minutes": 1440,
+        "requests": 1128,
+        "completed": 932,
+        "cancelled": 192,
+        "pending": 4,
+        "service_rate": 0.8262411347517731,
+        "cancellation_rate": 0.1702127659574468,
+        "avg_wait": 2.811158798283262,
+        "avg_pickup_distance": 1.6995708154506437,
+        "empty_distance": 1584,
+        "empty_driving_ratio": 0.33559322033898303,
+        "utilisation": 0.4097222222222222,
+        "earnings": 18728.0,
+        "earnings_fairness": 0.9159729731653555
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400000,
+        "minutes": 1440,
+        "requests": 1108,
+        "completed": 930,
+        "cancelled": 173,
+        "pending": 5,
+        "service_rate": 0.8393501805054152,
+        "cancellation_rate": 0.15613718411552346,
+        "avg_wait": 2.5086021505376346,
+        "avg_pickup_distance": 1.6526881720430107,
+        "empty_distance": 2783,
+        "empty_driving_ratio": 0.4647628590514362,
+        "utilisation": 0.41163194444444445,
+        "earnings": 18915.0,
+        "earnings_fairness": 0.8932156760501594
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400001,
+        "minutes": 1440,
+        "requests": 1092,
+        "completed": 912,
+        "cancelled": 177,
+        "pending": 3,
+        "service_rate": 0.8351648351648352,
+        "cancellation_rate": 0.1620879120879121,
+        "avg_wait": 2.2467105263157894,
+        "avg_pickup_distance": 1.6228070175438596,
+        "empty_distance": 2689,
+        "empty_driving_ratio": 0.46546650510645665,
+        "utilisation": 0.39652777777777776,
+        "earnings": 18384.0,
+        "earnings_fairness": 0.8619167534342532
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400002,
+        "minutes": 1440,
+        "requests": 1041,
+        "completed": 883,
+        "cancelled": 150,
+        "pending": 8,
+        "service_rate": 0.8482228626320846,
+        "cancellation_rate": 0.1440922190201729,
+        "avg_wait": 2.492638731596829,
+        "avg_pickup_distance": 1.654586636466591,
+        "empty_distance": 2630,
+        "empty_driving_ratio": 0.46172752808988765,
+        "utilisation": 0.39296875,
+        "earnings": 18028.0,
+        "earnings_fairness": 0.8667715428230914
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400003,
+        "minutes": 1440,
+        "requests": 1065,
+        "completed": 912,
+        "cancelled": 149,
+        "pending": 4,
+        "service_rate": 0.856338028169014,
+        "cancellation_rate": 0.13990610328638498,
+        "avg_wait": 2.324561403508772,
+        "avg_pickup_distance": 1.7116228070175439,
+        "empty_distance": 2788,
+        "empty_driving_ratio": 0.4722222222222222,
+        "utilisation": 0.40598958333333335,
+        "earnings": 18468.0,
+        "earnings_fairness": 0.8836130921747739
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400004,
+        "minutes": 1440,
+        "requests": 1116,
+        "completed": 932,
+        "cancelled": 178,
+        "pending": 6,
+        "service_rate": 0.8351254480286738,
+        "cancellation_rate": 0.15949820788530467,
+        "avg_wait": 2.315450643776824,
+        "avg_pickup_distance": 1.6083690987124464,
+        "empty_distance": 2751,
+        "empty_driving_ratio": 0.46204232448773935,
+        "utilisation": 0.40815972222222224,
+        "earnings": 18929.0,
+        "earnings_fairness": 0.8659954412029126
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400005,
+        "minutes": 1440,
+        "requests": 1092,
+        "completed": 945,
+        "cancelled": 142,
+        "pending": 5,
+        "service_rate": 0.8653846153846154,
+        "cancellation_rate": 0.13003663003663005,
+        "avg_wait": 2.5915343915343914,
+        "avg_pickup_distance": 1.656084656084656,
+        "empty_distance": 2728,
+        "empty_driving_ratio": 0.4568748953274158,
+        "utilisation": 0.4173611111111111,
+        "earnings": 19179.0,
+        "earnings_fairness": 0.92712069847502
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400006,
+        "minutes": 1440,
+        "requests": 1073,
+        "completed": 926,
+        "cancelled": 143,
+        "pending": 4,
+        "service_rate": 0.8630009319664492,
+        "cancellation_rate": 0.13327120223671948,
+        "avg_wait": 2.552915766738661,
+        "avg_pickup_distance": 1.6220302375809936,
+        "empty_distance": 2712,
+        "empty_driving_ratio": 0.4623252642345721,
+        "utilisation": 0.4041666666666667,
+        "earnings": 18722.0,
+        "earnings_fairness": 0.895482974949876
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400007,
+        "minutes": 1440,
+        "requests": 1068,
+        "completed": 923,
+        "cancelled": 137,
+        "pending": 8,
+        "service_rate": 0.8642322097378277,
+        "cancellation_rate": 0.12827715355805244,
+        "avg_wait": 2.3445287107258936,
+        "avg_pickup_distance": 1.5817984832069338,
+        "empty_distance": 2671,
+        "empty_driving_ratio": 0.45736301369863014,
+        "utilisation": 0.40182291666666664,
+        "earnings": 18737.0,
+        "earnings_fairness": 0.9120922182453923
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400008,
+        "minutes": 1440,
+        "requests": 1091,
+        "completed": 923,
+        "cancelled": 163,
+        "pending": 5,
+        "service_rate": 0.846012832263978,
+        "cancellation_rate": 0.14940421631530706,
+        "avg_wait": 2.5200433369447452,
+        "avg_pickup_distance": 1.6229685807150596,
+        "empty_distance": 2663,
+        "empty_driving_ratio": 0.464909217877095,
+        "utilisation": 0.39609375,
+        "earnings": 18425.0,
+        "earnings_fairness": 0.8953139860665833
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400009,
+        "minutes": 1440,
+        "requests": 1099,
+        "completed": 928,
+        "cancelled": 168,
+        "pending": 3,
+        "service_rate": 0.8444040036396724,
+        "cancellation_rate": 0.15286624203821655,
+        "avg_wait": 2.8211206896551726,
+        "avg_pickup_distance": 1.5851293103448276,
+        "empty_distance": 2568,
+        "empty_driving_ratio": 0.4462206776715899,
+        "utilisation": 0.40434027777777776,
+        "earnings": 18841.0,
+        "earnings_fairness": 0.9044963610592223
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400010,
+        "minutes": 1440,
+        "requests": 1145,
+        "completed": 967,
+        "cancelled": 172,
+        "pending": 6,
+        "service_rate": 0.8445414847161572,
+        "cancellation_rate": 0.15021834061135372,
+        "avg_wait": 2.670113753877973,
+        "avg_pickup_distance": 1.6701137538779731,
+        "empty_distance": 2691,
+        "empty_driving_ratio": 0.4512072434607646,
+        "utilisation": 0.42430555555555555,
+        "earnings": 19489.0,
+        "earnings_fairness": 0.8896086046207736
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400011,
+        "minutes": 1440,
+        "requests": 1103,
+        "completed": 931,
+        "cancelled": 167,
+        "pending": 5,
+        "service_rate": 0.844061650045331,
+        "cancellation_rate": 0.1514052583862194,
+        "avg_wait": 2.300751879699248,
+        "avg_pickup_distance": 1.61546723952739,
+        "empty_distance": 2768,
+        "empty_driving_ratio": 0.46915254237288134,
+        "utilisation": 0.40243055555555557,
+        "earnings": 18706.0,
+        "earnings_fairness": 0.8695020839819221
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400012,
+        "minutes": 1440,
+        "requests": 1123,
+        "completed": 947,
+        "cancelled": 175,
+        "pending": 1,
+        "service_rate": 0.8432769367764915,
+        "cancellation_rate": 0.1558325912733749,
+        "avg_wait": 2.8458289334741287,
+        "avg_pickup_distance": 1.6335797254487856,
+        "empty_distance": 2641,
+        "empty_driving_ratio": 0.45091343691309543,
+        "utilisation": 0.4134548611111111,
+        "earnings": 19118.0,
+        "earnings_fairness": 0.898727747150253
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400013,
+        "minutes": 1440,
+        "requests": 1054,
+        "completed": 910,
+        "cancelled": 142,
+        "pending": 2,
+        "service_rate": 0.8633776091081594,
+        "cancellation_rate": 0.1347248576850095,
+        "avg_wait": 2.2593406593406593,
+        "avg_pickup_distance": 1.6241758241758242,
+        "empty_distance": 2715,
+        "empty_driving_ratio": 0.46457905544147843,
+        "utilisation": 0.39991319444444445,
+        "earnings": 18487.0,
+        "earnings_fairness": 0.9010072209406829
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400014,
+        "minutes": 1440,
+        "requests": 1076,
+        "completed": 913,
+        "cancelled": 161,
+        "pending": 2,
+        "service_rate": 0.8485130111524164,
+        "cancellation_rate": 0.1496282527881041,
+        "avg_wait": 2.2869660460021906,
+        "avg_pickup_distance": 1.624315443592552,
+        "empty_distance": 2675,
+        "empty_driving_ratio": 0.46296296296296297,
+        "utilisation": 0.3980902777777778,
+        "earnings": 18439.0,
+        "earnings_fairness": 0.9131283613334326
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400015,
+        "minutes": 1440,
+        "requests": 1049,
+        "completed": 900,
+        "cancelled": 146,
+        "pending": 3,
+        "service_rate": 0.8579599618684461,
+        "cancellation_rate": 0.13918017159199236,
+        "avg_wait": 2.4877777777777776,
+        "avg_pickup_distance": 1.6866666666666668,
+        "empty_distance": 2658,
+        "empty_driving_ratio": 0.46306620209059235,
+        "utilisation": 0.3993055555555556,
+        "earnings": 18246.0,
+        "earnings_fairness": 0.8604609311316849
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400016,
+        "minutes": 1440,
+        "requests": 1052,
+        "completed": 890,
+        "cancelled": 158,
+        "pending": 4,
+        "service_rate": 0.8460076045627376,
+        "cancellation_rate": 0.15019011406844107,
+        "avg_wait": 2.5640449438202246,
+        "avg_pickup_distance": 1.6471910112359551,
+        "empty_distance": 2704,
+        "empty_driving_ratio": 0.4714086471408647,
+        "utilisation": 0.39045138888888886,
+        "earnings": 17996.0,
+        "earnings_fairness": 0.8952367119378205
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400017,
+        "minutes": 1440,
+        "requests": 1080,
+        "completed": 899,
+        "cancelled": 178,
+        "pending": 3,
+        "service_rate": 0.8324074074074074,
+        "cancellation_rate": 0.1648148148148148,
+        "avg_wait": 2.3537263626251392,
+        "avg_pickup_distance": 1.6095661846496108,
+        "empty_distance": 2641,
+        "empty_driving_ratio": 0.4613100436681223,
+        "utilisation": 0.3933159722222222,
+        "earnings": 18242.0,
+        "earnings_fairness": 0.884063288428873
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400018,
+        "minutes": 1440,
+        "requests": 1122,
+        "completed": 949,
+        "cancelled": 171,
+        "pending": 2,
+        "service_rate": 0.8458110516934046,
+        "cancellation_rate": 0.15240641711229946,
+        "avg_wait": 2.5584826132771337,
+        "avg_pickup_distance": 1.624868282402529,
+        "empty_distance": 2682,
+        "empty_driving_ratio": 0.45573491928632115,
+        "utilisation": 0.4118923611111111,
+        "earnings": 19099.0,
+        "earnings_fairness": 0.9240195338738209
+      },
+      {
+        "method": "Zone Balancing",
+        "fleet_size": 8,
+        "seed": 400019,
+        "minutes": 1440,
+        "requests": 1128,
+        "completed": 956,
+        "cancelled": 168,
+        "pending": 4,
+        "service_rate": 0.8475177304964538,
+        "cancellation_rate": 0.14893617021276595,
+        "avg_wait": 2.433054393305439,
+        "avg_pickup_distance": 1.643305439330544,
+        "empty_distance": 2761,
+        "empty_driving_ratio": 0.4606272939606273,
+        "utilisation": 0.4170138888888889,
+        "earnings": 19259.0,
+        "earnings_fairness": 0.8767296862221027
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400000,
+        "minutes": 1440,
+        "requests": 1108,
+        "completed": 934,
+        "cancelled": 169,
+        "pending": 5,
+        "service_rate": 0.8429602888086642,
+        "cancellation_rate": 0.15252707581227437,
+        "avg_wait": 1.8940042826552463,
+        "avg_pickup_distance": 1.4646680942184154,
+        "empty_distance": 2237,
+        "empty_driving_ratio": 0.41030814380044023,
+        "utilisation": 0.3978298611111111,
+        "earnings": 18985.0,
+        "earnings_fairness": 0.9667816873832996
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400001,
+        "minutes": 1440,
+        "requests": 1092,
+        "completed": 914,
+        "cancelled": 175,
+        "pending": 3,
+        "service_rate": 0.836996336996337,
+        "cancellation_rate": 0.16025641025641027,
+        "avg_wait": 1.811816192560175,
+        "avg_pickup_distance": 1.4595185995623632,
+        "empty_distance": 2231,
+        "empty_driving_ratio": 0.41873123123123124,
+        "utilisation": 0.3846354166666667,
+        "earnings": 18431.0,
+        "earnings_fairness": 0.9629849147530388
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400002,
+        "minutes": 1440,
+        "requests": 1041,
+        "completed": 887,
+        "cancelled": 146,
+        "pending": 8,
+        "service_rate": 0.8520653218059558,
+        "cancellation_rate": 0.14024975984630164,
+        "avg_wait": 1.95152198421646,
+        "avg_pickup_distance": 1.4532130777903043,
+        "empty_distance": 2153,
+        "empty_driving_ratio": 0.41119174942704356,
+        "utilisation": 0.3795138888888889,
+        "earnings": 18119.0,
+        "earnings_fairness": 0.9666126468300467
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400003,
+        "minutes": 1440,
+        "requests": 1065,
+        "completed": 915,
+        "cancelled": 146,
+        "pending": 4,
+        "service_rate": 0.8591549295774648,
+        "cancellation_rate": 0.13708920187793427,
+        "avg_wait": 1.833879781420765,
+        "avg_pickup_distance": 1.5245901639344261,
+        "empty_distance": 2293,
+        "empty_driving_ratio": 0.42275073746312686,
+        "utilisation": 0.39288194444444446,
+        "earnings": 18543.0,
+        "earnings_fairness": 0.9537512056006915
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400004,
+        "minutes": 1440,
+        "requests": 1116,
+        "completed": 934,
+        "cancelled": 176,
+        "pending": 6,
+        "service_rate": 0.8369175627240143,
+        "cancellation_rate": 0.15770609318996415,
+        "avg_wait": 1.9250535331905783,
+        "avg_pickup_distance": 1.4732334047109208,
+        "empty_distance": 2261,
+        "empty_driving_ratio": 0.4131189475607528,
+        "utilisation": 0.39826388888888886,
+        "earnings": 18976.0,
+        "earnings_fairness": 0.9560372377587234
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400005,
+        "minutes": 1440,
+        "requests": 1092,
+        "completed": 948,
+        "cancelled": 139,
+        "pending": 5,
+        "service_rate": 0.8681318681318682,
+        "cancellation_rate": 0.12728937728937728,
+        "avg_wait": 1.9440928270042195,
+        "avg_pickup_distance": 1.4556962025316456,
+        "empty_distance": 2156,
+        "empty_driving_ratio": 0.3988899167437558,
+        "utilisation": 0.40182291666666664,
+        "earnings": 19227.0,
+        "earnings_fairness": 0.9501774102389596
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400006,
+        "minutes": 1440,
+        "requests": 1073,
+        "completed": 929,
+        "cancelled": 140,
+        "pending": 4,
+        "service_rate": 0.8657968313140727,
+        "cancellation_rate": 0.13047530288909598,
+        "avg_wait": 1.9935414424111948,
+        "avg_pickup_distance": 1.419806243272336,
+        "empty_distance": 2165,
+        "empty_driving_ratio": 0.4060390097524381,
+        "utilisation": 0.3894097222222222,
+        "earnings": 18791.0,
+        "earnings_fairness": 0.9731335478831884
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400007,
+        "minutes": 1440,
+        "requests": 1068,
+        "completed": 919,
+        "cancelled": 141,
+        "pending": 8,
+        "service_rate": 0.8604868913857678,
+        "cancellation_rate": 0.13202247191011235,
+        "avg_wait": 1.7410228509249184,
+        "avg_pickup_distance": 1.41240478781284,
+        "empty_distance": 2139,
+        "empty_driving_ratio": 0.40442427680090753,
+        "utilisation": 0.3861111111111111,
+        "earnings": 18640.0,
+        "earnings_fairness": 0.9729937519296095
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400008,
+        "minutes": 1440,
+        "requests": 1091,
+        "completed": 921,
+        "cancelled": 165,
+        "pending": 5,
+        "service_rate": 0.844179651695692,
+        "cancellation_rate": 0.15123739688359303,
+        "avg_wait": 1.9467969598262758,
+        "avg_pickup_distance": 1.4375678610206297,
+        "empty_distance": 2142,
+        "empty_driving_ratio": 0.4116064565718678,
+        "utilisation": 0.3807291666666667,
+        "earnings": 18396.0,
+        "earnings_fairness": 0.9547905516053578
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400009,
+        "minutes": 1440,
+        "requests": 1099,
+        "completed": 928,
+        "cancelled": 168,
+        "pending": 3,
+        "service_rate": 0.8444040036396724,
+        "cancellation_rate": 0.15286624203821655,
+        "avg_wait": 1.8954741379310345,
+        "avg_pickup_distance": 1.3890086206896552,
+        "empty_distance": 2028,
+        "empty_driving_ratio": 0.38910207214121256,
+        "utilisation": 0.38828125,
+        "earnings": 18832.0,
+        "earnings_fairness": 0.9628334751790544
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400010,
+        "minutes": 1440,
+        "requests": 1145,
+        "completed": 969,
+        "cancelled": 170,
+        "pending": 6,
+        "service_rate": 0.8462882096069869,
+        "cancellation_rate": 0.14847161572052403,
+        "avg_wait": 2.021671826625387,
+        "avg_pickup_distance": 1.4932920536635708,
+        "empty_distance": 2290,
+        "empty_driving_ratio": 0.4115744069015097,
+        "utilisation": 0.4098090277777778,
+        "earnings": 19512.0,
+        "earnings_fairness": 0.9802281925851914
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400011,
+        "minutes": 1440,
+        "requests": 1103,
+        "completed": 929,
+        "cancelled": 169,
+        "pending": 5,
+        "service_rate": 0.8422484134179511,
+        "cancellation_rate": 0.15321849501359927,
+        "avg_wait": 1.7621097954790097,
+        "avg_pickup_distance": 1.4488697524219591,
+        "empty_distance": 2223,
+        "empty_driving_ratio": 0.4157471479334206,
+        "utilisation": 0.3880208333333333,
+        "earnings": 18662.0,
+        "earnings_fairness": 0.9595484612184421
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400012,
+        "minutes": 1440,
+        "requests": 1123,
+        "completed": 950,
+        "cancelled": 172,
+        "pending": 1,
+        "service_rate": 0.8459483526268923,
+        "cancellation_rate": 0.15316117542297417,
+        "avg_wait": 2.1157894736842104,
+        "avg_pickup_distance": 1.4915789473684211,
+        "empty_distance": 2137,
+        "empty_driving_ratio": 0.39809985096870343,
+        "utilisation": 0.40347222222222223,
+        "earnings": 19193.0,
+        "earnings_fairness": 0.96404686349103
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400013,
+        "minutes": 1440,
+        "requests": 1054,
+        "completed": 911,
+        "cancelled": 141,
+        "pending": 2,
+        "service_rate": 0.864326375711575,
+        "cancellation_rate": 0.13377609108159394,
+        "avg_wait": 1.9407244785949507,
+        "avg_pickup_distance": 1.5005488474204172,
+        "empty_distance": 2239,
+        "empty_driving_ratio": 0.41624837330358805,
+        "utilisation": 0.3912326388888889,
+        "earnings": 18530.0,
+        "earnings_fairness": 0.964739235241301
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400014,
+        "minutes": 1440,
+        "requests": 1076,
+        "completed": 924,
+        "cancelled": 150,
+        "pending": 2,
+        "service_rate": 0.8587360594795539,
+        "cancellation_rate": 0.13940520446096655,
+        "avg_wait": 1.8874458874458875,
+        "avg_pickup_distance": 1.4610389610389611,
+        "empty_distance": 2143,
+        "empty_driving_ratio": 0.40533383771515036,
+        "utilisation": 0.39010416666666664,
+        "earnings": 18672.0,
+        "earnings_fairness": 0.9486240678474303
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400015,
+        "minutes": 1440,
+        "requests": 1049,
+        "completed": 904,
+        "cancelled": 142,
+        "pending": 3,
+        "service_rate": 0.8617731172545281,
+        "cancellation_rate": 0.13536701620591038,
+        "avg_wait": 1.9380530973451326,
+        "avg_pickup_distance": 1.4789823008849559,
+        "empty_distance": 2180,
+        "empty_driving_ratio": 0.41366223908918404,
+        "utilisation": 0.38428819444444445,
+        "earnings": 18310.0,
+        "earnings_fairness": 0.9513036609452679
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400016,
+        "minutes": 1440,
+        "requests": 1052,
+        "completed": 892,
+        "cancelled": 156,
+        "pending": 4,
+        "service_rate": 0.8479087452471483,
+        "cancellation_rate": 0.1482889733840304,
+        "avg_wait": 1.8878923766816142,
+        "avg_pickup_distance": 1.4719730941704037,
+        "empty_distance": 2184,
+        "empty_driving_ratio": 0.4185511690302798,
+        "utilisation": 0.37734375,
+        "earnings": 18022.0,
+        "earnings_fairness": 0.9590930793018165
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400017,
+        "minutes": 1440,
+        "requests": 1080,
+        "completed": 902,
+        "cancelled": 175,
+        "pending": 3,
+        "service_rate": 0.8351851851851851,
+        "cancellation_rate": 0.16203703703703703,
+        "avg_wait": 1.966740576496674,
+        "avg_pickup_distance": 1.507760532150776,
+        "empty_distance": 2238,
+        "empty_driving_ratio": 0.41957255343082117,
+        "utilisation": 0.38680555555555557,
+        "earnings": 18308.0,
+        "earnings_fairness": 0.9699420070234701
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400018,
+        "minutes": 1440,
+        "requests": 1122,
+        "completed": 948,
+        "cancelled": 172,
+        "pending": 2,
+        "service_rate": 0.8449197860962567,
+        "cancellation_rate": 0.1532976827094474,
+        "avg_wait": 2.0010548523206753,
+        "avg_pickup_distance": 1.5,
+        "empty_distance": 2193,
+        "empty_driving_ratio": 0.40656284760845385,
+        "utilisation": 0.40130208333333334,
+        "earnings": 19083.0,
+        "earnings_fairness": 0.9596408658434918
+      },
+      {
+        "method": "Predictive Coordinated Dispatch",
+        "fleet_size": 8,
+        "seed": 400019,
+        "minutes": 1440,
+        "requests": 1128,
+        "completed": 960,
+        "cancelled": 164,
+        "pending": 4,
+        "service_rate": 0.851063829787234,
+        "cancellation_rate": 0.1453900709219858,
+        "avg_wait": 1.953125,
+        "avg_pickup_distance": 1.525,
+        "empty_distance": 2326,
+        "empty_driving_ratio": 0.4177442528735632,
+        "utilisation": 0.40850694444444446,
+        "earnings": 19326.0,
+        "earnings_fairness": 0.964244347094367
+      }
+    ],
+    "paired_comparisons": [
+      {
+        "fleet_size": 8,
+        "baseline": "Nearest Cab",
+        "paired_seeds": 20,
+        "service_rate": {
+          "mean_delta": 0.030464051119063112,
+          "ci95_low": 0.02592369033224105,
+          "ci95_high": 0.03500441190588518
+        },
+        "cancellation_rate": {
+          "mean_delta": -0.030464051119063112,
+          "ci95_low": -0.035004411905885185,
+          "ci95_high": -0.02592369033224104
+        },
+        "avg_wait": {
+          "mean_delta": -0.9616790389239531,
+          "ci95_low": -1.0464589350742126,
+          "ci95_high": -0.8768991427736935
+        },
+        "avg_pickup_distance": {
+          "mean_delta": -0.25318888606054835,
+          "ci95_low": -0.27248655356359797,
+          "ci95_high": -0.2338912185574987
+        },
+        "empty_distance": {
+          "mean_delta": 660.7,
+          "ci95_low": 620.7543394569122,
+          "ci95_high": 700.6456605430878
+        },
+        "empty_driving_ratio": {
+          "mean_delta": 0.07360044282775297,
+          "ci95_low": 0.06900025658484038,
+          "ci95_high": 0.07820062907066555
+        },
+        "utilisation": {
+          "mean_delta": -0.004040798611111113,
+          "ci95_low": -0.0069588262144035015,
+          "ci95_high": -0.0011227710078187247
+        },
+        "earnings": {
+          "mean_delta": 723.7,
+          "ci95_low": 618.4454214024385,
+          "ci95_high": 828.9545785975616
+        },
+        "earnings_fairness": {
+          "mean_delta": 0.05604210457040727,
+          "ci95_low": 0.046941891011661935,
+          "ci95_high": 0.06514231812915261
+        }
+      },
+      {
+        "fleet_size": 8,
+        "baseline": "Zone Balancing",
+        "paired_seeds": 20,
+        "service_rate": {
+          "mean_delta": 0.001939068258662502,
+          "ci95_low": 0.0005895481497208723,
+          "ci95_high": 0.0032885883676041314
+        },
+        "cancellation_rate": {
+          "mean_delta": -0.0019390682586625046,
+          "ci95_low": -0.00328858836760414,
+          "ci95_high": -0.0005895481497208688
+        },
+        "avg_wait": {
+          "mean_delta": -0.553319117886011,
+          "ci95_low": -0.6182968563318361,
+          "ci95_high": -0.48834137944018585
+        },
+        "avg_pickup_distance": {
+          "mean_delta": -0.16642915129803754,
+          "ci95_low": -0.18135746456877178,
+          "ci95_high": -0.1515008380273033
+        },
+        "empty_distance": {
+          "mean_delta": -498.05,
+          "ci95_low": -520.3139001810758,
+          "ci95_high": -475.7860998189242
+        },
+        "empty_driving_ratio": {
+          "mean_delta": -0.050780881735865244,
+          "ci95_low": -0.05320476939622367,
+          "ci95_high": -0.048356994075506816
+        },
+        "utilisation": {
+          "mean_delta": -0.012443576388888891,
+          "ci95_low": -0.013829782798566646,
+          "ci95_high": -0.011057369979211137
+        },
+        "earnings": {
+          "mean_delta": 42.45,
+          "ci95_low": 11.576550911562911,
+          "ci95_high": 73.32344908843709
+        },
+        "earnings_fairness": {
+          "mean_delta": 0.07115021478255636,
+          "ci95_low": 0.060892516891012466,
+          "ci95_high": 0.08140791267410025
+        }
+      }
+    ]
+  },
+  "interpretation": "Paired 95% t intervals over independent demand seeds. Conditional on one trained forecast and one DQN training seed; not across training restarts. No tuning on these evaluation seeds."
+}

@@ -1,0 +1,93 @@
+{
+  "seeds": [
+    200000,
+    200001,
+    200002,
+    200003,
+    200004
+  ],
+  "objective": "avg_wait + empty_distance / 2000",
+  "selected_movement_cost": 0.05,
+  "candidates": [
+    {
+      "movement_cost": 0.02,
+      "score": 2.014881008502297,
+      "metrics": {
+        "minutes": 1440,
+        "requests": 714.6,
+        "completed": 608.8,
+        "cancelled": 102,
+        "pending": 3.8,
+        "service_rate": 0.8518523411609114,
+        "cancellation_rate": 0.1428315025701702,
+        "avg_wait": 1.124881008502297,
+        "avg_pickup_distance": 1.0745591235629293,
+        "empty_distance": 1780,
+        "empty_driving_ratio": 0.45431039528131834,
+        "utilisation": 0.2425173611111111,
+        "earnings": 12506.2,
+        "earnings_fairness": 0.9334683326742221
+      }
+    },
+    {
+      "movement_cost": 0.03,
+      "score": 1.9436743310351539,
+      "metrics": {
+        "minutes": 1440,
+        "requests": 714.6,
+        "completed": 608.8,
+        "cancelled": 102,
+        "pending": 3.8,
+        "service_rate": 0.8518523411609114,
+        "cancellation_rate": 0.1428315025701702,
+        "avg_wait": 1.1248743310351539,
+        "avg_pickup_distance": 1.0748353894781775,
+        "empty_distance": 1637.6,
+        "empty_driving_ratio": 0.4336165263177551,
+        "utilisation": 0.24255208333333333,
+        "earnings": 12506.2,
+        "earnings_fairness": 0.9329412252200707
+      }
+    },
+    {
+      "movement_cost": 0.05,
+      "score": 1.9310379716807562,
+      "metrics": {
+        "minutes": 1440,
+        "requests": 714.6,
+        "completed": 608.8,
+        "cancelled": 102,
+        "pending": 3.8,
+        "service_rate": 0.8518523411609114,
+        "cancellation_rate": 0.1428315025701702,
+        "avg_wait": 1.180337971680756,
+        "avg_pickup_distance": 1.1277076877352024,
+        "empty_distance": 1501.4,
+        "empty_driving_ratio": 0.4123433910233092,
+        "utilisation": 0.24538194444444444,
+        "earnings": 12506.2,
+        "earnings_fairness": 0.930096511291638
+      }
+    },
+    {
+      "movement_cost": 0.08,
+      "score": 1.9515195197623119,
+      "metrics": {
+        "minutes": 1440,
+        "requests": 714.6,
+        "completed": 608.6,
+        "cancelled": 102.2,
+        "pending": 3.8,
+        "service_rate": 0.8515726208811911,
+        "cancellation_rate": 0.14311122284989047,
+        "avg_wait": 1.2557195197623119,
+        "avg_pickup_distance": 1.1997788885750242,
+        "empty_distance": 1391.6,
+        "empty_driving_ratio": 0.39415829955402254,
+        "utilisation": 0.24911458333333333,
+        "earnings": 12502.4,
+        "earnings_fairness": 0.943968362722208
+      }
+    }
+  ]
+}

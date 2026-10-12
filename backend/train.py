@@ -13,9 +13,12 @@ def train(episodes=360, seed=42, day_minutes=1440, fleet_size=8, learn_every=4):
     for episode in range(1, episodes + 1):
         env = CabDispatchEnv(seed=seed + episode, fleet_size=fleet_size, day_minutes=day_minutes)
         states = env.reset()
+        # Decay over training days, not overnight forced-WAIT updates.
+        agent.epsilon = max(agent.epsilon_min, 1.0 - (episode - 1) / max(1, episodes * 0.8))
         episode_reward = 0.0
         episode_losses = []
         for step in range(day_minutes):
+            learning_ids = {c.cab_id for c in env.cabs if env.is_shift_active or c.status != "idle"}
             actions = {}
             for cab in env.cabs:
                 if cab.status == "idle":
@@ -28,9 +31,10 @@ def train(episodes=360, seed=42, day_minutes=1440, fleet_size=8, learn_every=4):
             for cab in env.cabs:
                 reward = env.last_rewards[cab.cab_id]
                 episode_reward += reward
-                agent.remember(states[cab.cab_id], actions[cab.cab_id], reward,
-                               next_states[cab.cab_id], done, env.valid_actions(cab))
-            if step % learn_every == 0:
+                if cab.cab_id in learning_ids:
+                    agent.remember(states[cab.cab_id], actions[cab.cab_id], reward,
+                                   next_states[cab.cab_id], done, env.valid_actions(cab))
+            if learning_ids and step % learn_every == 0:
                 loss = agent.learn()
                 if loss is not None:
                     episode_losses.append(loss)
