@@ -10,7 +10,7 @@ from .agents.dqn import SharedDQNAgent
 from .baselines.nearest_cab import nearest_cab_policy
 from .baselines.zone_balancing import zone_balancing_policy
 from .environment.simulator import CabDispatchEnv
-from .coordination.predictive import DemandForecast, PredictiveDispatchPolicy, coordinated_matching
+from .coordination.predictive import DemandForecast, PredictiveDispatchPolicy, IncomingAwareDispatchPolicy, coordinated_matching
 
 METRICS = ('service_rate', 'cancellation_rate', 'avg_wait', 'avg_pickup_distance',
            'empty_distance', 'empty_driving_ratio', 'utilisation', 'earnings', 'earnings_fairness')
@@ -70,6 +70,9 @@ def main(evaluation_episodes=20, fleet_sizes=(4, 8, 12, 16), day_minutes=1440, m
             raise ValueError('Forecast training and evaluation seeds overlap')
         methods += [('Coordinated Matching', coordinated_matching),
                     ('Predictive Coordinated Dispatch', PredictiveDispatchPolicy(demand_forecast, movement_cost=0.05))]
+    if os.path.exists('models/incoming_config.json') and os.path.exists(forecast):
+        config = json.load(open('models/incoming_config.json'))
+        methods.append(('Incoming-aware Coordinated Dispatch', IncomingAwareDispatchPolicy(demand_forecast, **config)))
     checkpoint = None
     if os.path.exists(model):
         checkpoint = torch.load(model, map_location='cpu', weights_only=True)
@@ -103,6 +106,8 @@ def main(evaluation_episodes=20, fleet_sizes=(4, 8, 12, 16), day_minutes=1440, m
                            'forecast_training_seeds': demand_forecast.training_seeds if os.path.exists(forecast) else [],
                            'validation_seeds': list(range(200000, 200005)),
                            'movement_cost': 0.05,
+                           'incoming_validation_seeds': list(range(500000, 500005)) if os.path.exists('models/incoming_config.json') else [],
+                           'incoming_config': config if os.path.exists('models/incoming_config.json') and os.path.exists(forecast) else None,
                            'forecast_sha256': hashlib.sha256(open(forecast, 'rb').read()).hexdigest() if os.path.exists(forecast) else None,
                            'training_day_minutes': checkpoint['day_minutes'] if checkpoint else None,
                            'model_sha256': hashlib.sha256(open(model, 'rb').read()).hexdigest() if checkpoint else None,
@@ -114,7 +119,7 @@ def main(evaluation_episodes=20, fleet_sizes=(4, 8, 12, 16), day_minutes=1440, m
     with open('results/experiment_results.json', 'w') as handle:
         json.dump(payload, handle, indent=2)
     with open('results/experiment_results.csv', 'w', newline='') as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(results[0]))
+        writer = csv.DictWriter(handle, fieldnames=list(results[0]), lineterminator='\n')
         writer.writeheader()
         writer.writerows(results)
     print(json.dumps(payload, indent=2))

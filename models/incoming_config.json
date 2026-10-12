@@ -1,0 +1,5 @@
+{
+  "availability_cost": 0.5,
+  "movement_cost": 0.05,
+  "queue_weight": 0.1
+}

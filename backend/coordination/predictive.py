@@ -86,11 +86,18 @@ class PredictiveDispatchPolicy:
         self.movement_cost = movement_cost
         self.horizon = horizon
 
+    def coverage_floor(self, env, actions):
+        return np.full(len(ZONES), 8.0)
+
+    def demand_weights(self, env, actions):
+        return self.forecast.weights(env.minute, self.horizon)
+
     def __call__(self, env):
         actions = coordinated_matching(env)
         if not env.is_shift_active:
             return actions
-        weights = self.forecast.weights(env.minute, self.horizon)
+        weights = self.demand_weights(env, actions)
+        incoming = self.coverage_floor(env, actions)
         idle = [c for c in env.cabs if c.status == 'idle' and actions[c.cab_id] == env.ACTION_WAIT]
         if not idle:
             return actions
@@ -100,6 +107,7 @@ class PredictiveDispatchPolicy:
         for cab in idle:
             others = [p[0] * GRID_SIZE + p[1] for i, p in planned.items() if i != cab.cab_id]
             distances = DISTANCES[:, others].min(axis=1) if others else np.full(len(ZONES), 8)
+            distances = np.minimum(distances, incoming)
             x, y = cab.position
             candidates = [(env.ACTION_WAIT, (x, y))]
             for action, position in [(env.ACTION_NORTH, (x-1,y)), (env.ACTION_SOUTH, (x+1,y)),
@@ -116,6 +124,48 @@ class PredictiveDispatchPolicy:
             actions[cab.cab_id] = action
             planned[cab.cab_id] = position
         return actions
+
+
+class IncomingAwareDispatchPolicy(PredictiveDispatchPolicy):
+    """Account for cabs about to finish a known trip and current unmatched riders.
+
+    Only accepted trip destinations and current requests are used. Future
+    arrivals still come from the training forecast, never the evaluated day.
+    """
+    def __init__(self, forecast, movement_cost=0.05, horizon=15, availability_cost=0.3, queue_weight=0.1):
+        super().__init__(forecast, movement_cost, horizon)
+        self.availability_cost = availability_cost
+        self.queue_weight = queue_weight
+
+    def coverage_floor(self, env, actions):
+        incoming = np.full(len(ZONES), 8.0)
+        rides = {r.request_id: r for r in env.requests}
+        for cab in env.cabs:
+            action = actions.get(cab.cab_id, env.ACTION_WAIT)
+            if isinstance(action, tuple):
+                ride = rides[action[1]]
+                eta = manhattan(cab.position, ride.origin) + ride.distance
+                destination = ride.destination
+            elif cab.status != 'idle':
+                ride = rides[cab.ride_id]
+                eta = cab.remaining + (ride.distance if cab.status == 'en_route' else 0)
+                destination = ride.destination
+            else:
+                continue
+            if eta < self.horizon:
+                index = destination[0] * GRID_SIZE + destination[1]
+                incoming = np.minimum(incoming, DISTANCES[:, index] + eta * self.availability_cost)
+        return incoming
+
+    def demand_weights(self, env, actions):
+        weights = super().demand_weights(env, actions).copy()
+        assigned_ids = {action[1] for action in actions.values() if isinstance(action, tuple)}
+        for request in env.requests:
+            age = env.minute - request.created_at
+            if request.status == 'open' and request.request_id not in assigned_ids and age < env.cancellation_timeout:
+                urgency = 1 + age / max(1, env.cancellation_timeout)
+                weights[request.origin[0] * GRID_SIZE + request.origin[1]] += self.queue_weight * urgency
+        return weights
 
 
 if __name__ == '__main__':

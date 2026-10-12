@@ -227,3 +227,39 @@ has lower wait at 16 cabs. The 8-cab pilot shows the intended wait/empty-driving
 improvements against zone balancing, while its service-rate difference is
 not statistically established. The higher-demand stress scenario supports
 lower wait and lower empty distance against zone balancing without refitting.
+
+
+## Incoming-aware controller update
+
+The latest optional controller, `Incoming-aware Coordinated Dispatch`, improves
+planning by considering cabs' known drop-off zones and time remaining until
+availability. It also prioritises currently unmatched requests by wait age.
+This uses operational trip information, not future demand from a test day.
+The previous predictive controller remains in the benchmark as an ablation.
+
+Parameters were selected on a new validation split (500000–500004), using the
+same waiting/empty-distance score and preferring no service-rate loss. The
+selected configuration is recorded in `models/incoming_config.json`; validation
+outputs are in `results/incoming_validation.json`. New normal test seeds begin
+at 600000 and stress seeds at 700000. Earlier test seeds were not reused for
+this update's improvement claims.
+
+```bash
+python -m backend.tune_incoming
+OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m backend.compare_incoming --episodes 20
+```
+
+[Latest measured results](results/incoming_summary.md) include the comparison
+against the previous controller, baselines, confidence intervals and stress
+test. The earlier `improvement_summary.md` refers to the prior 300000-series
+experiment; the latest `experiment_results.json` is the new 600000-series run.
+As before, the controller is a central forecast/optimisation extension, and
+its improvements must not be attributed to the separate plain DQN model.
+
+
+The incoming-aware configuration was chosen for its combined waiting/empty
+travel objective. A lower objective does not imply each metric dominates the
+previous controller. The latest report exposes any waiting-time trade-off
+alongside the empty-distance saving. Tests cover use of known drop-off timing,
+queue priority without double-counting matched riders, and absence of future
+arrival access. Both controller versions remain separately selectable.
