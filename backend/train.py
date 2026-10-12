@@ -29,7 +29,7 @@ def train(episodes=360, seed=42, day_minutes=1440, fleet_size=8, learn_every=4):
                 reward = env.last_rewards[cab.cab_id]
                 episode_reward += reward
                 agent.remember(states[cab.cab_id], actions[cab.cab_id], reward,
-                               next_states[cab.cab_id], done)
+                               next_states[cab.cab_id], done, env.valid_actions(cab))
             if step % learn_every == 0:
                 loss = agent.learn()
                 if loss is not None:
@@ -44,10 +44,11 @@ def train(episodes=360, seed=42, day_minutes=1440, fleet_size=8, learn_every=4):
     os.makedirs("models", exist_ok=True)
     os.makedirs("results", exist_ok=True)
     torch.save({"model": agent.policy.state_dict(), "epsilon": agent.epsilon,
-                "rewards": rewards, "losses": losses, "episodes": episodes},
+                "rewards": rewards, "losses": losses, "episodes": episodes, "seed": seed, "day_minutes": day_minutes,
+                "fleet_size": fleet_size, "simulator_version": 2},
                "models/dqn_latest.pt")
     with open("results/training_curve.json", "w", encoding="utf-8") as handle:
-        json.dump({"episodes": episodes, "rewards": rewards, "losses": losses, "epsilons": epsilons}, handle, indent=2)
+        json.dump({"episodes": episodes, "day_minutes": day_minutes, "seed": seed, "rewards": rewards, "losses": losses, "epsilons": epsilons}, handle, indent=2)
     return rewards
 
 

@@ -34,9 +34,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Train DQN for 360 full-day episodes
-        run: python -m backend.train --episodes ${{ inputs.episodes || '360' }} --seed 42 --day-minutes 1440 --fleet-size 8 --learn-every 4
+        run: OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m backend.train --episodes ${{ inputs.episodes || '360' }} --seed 42 --day-minutes 1440 --fleet-size 8 --learn-every 4
       - name: Run held-out full-day fleet/peak benchmark
-        run: python -m backend.experiment --episodes ${{ inputs.evaluation_episodes || '5' }} --fleet-sizes 4,8,12,16 --day-minutes 1440
+        run: OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m backend.experiment --episodes ${{ inputs.evaluation_episodes || '5' }} --fleet-sizes 4,8,12,16 --day-minutes 1440
       - name: Upload model and experiment results
         uses: actions/upload-artifact@v4
         with:
@@ -49,6 +49,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add models/dqn_latest.pt results/*.json results/*.csv
+          git add -f models/dqn_latest.pt results/experiment_results.json results/experiment_results.csv results/training_curve.json
           git diff --cached --quiet || git commit -m "Publish full-day DQN benchmark"
           git push

@@ -33,7 +33,8 @@ class CabDispatchEnv:
 
     def __init__(self, seed=42, fleet_size=8, day_minutes=1440, max_pickup_radius=3,
                  cancellation_timeout=8, shift_start=6 * 60, shift_end=22 * 60,
-                 shared_reward_weight=0.25):
+                 shared_reward_weight=0.25, sensing_radius=1):
+        self.sensing_radius = sensing_radius
         self.seed = seed
         self.rng = random.Random(seed)
         self.fleet_size = fleet_size
@@ -48,16 +49,17 @@ class CabDispatchEnv:
     def reset(self):
         self.rng = random.Random(self.seed)
         self.minute = 0
-        self.cabs = [Cab(i, (i // GRID_SIZE, i % GRID_SIZE)) for i in range(self.fleet_size)]
+        self.cabs = [Cab(i, ((i // GRID_SIZE) % GRID_SIZE, i % GRID_SIZE)) for i in range(self.fleet_size)]
         self.demand = DemandGenerator(self.seed + 100)
-        self.requests = []
+        self.requests = self.demand.requests_for_minute(0)
         self.completed = 0
         self.cancelled = 0
         self.total_wait = 0
         self.total_fare = 0.0
         self.total_empty_distance = 0
+        self.total_loaded_distance = 0
         self.total_pickup_distance = 0
-        self.total_requests = 0
+        self.total_requests = len(self.requests)
         self.history = []
         self.last_rewards = {i: 0.0 for i in range(self.fleet_size)}
         self.last_actions = {i: self.ACTION_WAIT for i in range(self.fleet_size)}
@@ -81,7 +83,8 @@ class CabDispatchEnv:
         return actions
 
     def open_requests_for(self, cab):
-        return [r for r in self.requests if r.status == "open" and manhattan(cab.position, r.origin) <= self.max_pickup_radius]
+        return [r for r in self.requests if r.status == "open" and
+                manhattan(cab.position, r.origin) <= min(self.sensing_radius, self.max_pickup_radius)]
 
     def _move(self, cab, action):
         if not self.is_shift_active:
@@ -103,38 +106,50 @@ class CabDispatchEnv:
         pickup_distance = manhattan(cab.position, request.origin)
         if pickup_distance > self.max_pickup_radius or not self.is_shift_active:
             return False
-        cab.empty_distance += pickup_distance
-        self.total_empty_distance += pickup_distance
-        self.total_pickup_distance += pickup_distance
+        request.pickup_distance = pickup_distance
         request.status = "assigned"
         request.assigned_cab = cab.cab_id
-        request.pickup_time = self.minute + pickup_distance
-        cab.status = "occupied"
+        cab.status = "en_route" if pickup_distance else "occupied"
         cab.ride_id = request.request_id
         cab.destination = request.destination
-        cab.remaining = max(1, request.distance)
+        cab.remaining = pickup_distance if pickup_distance else request.distance
+        if not pickup_distance:
+            request.pickup_time = self.minute
         return True
 
     def _complete_rides(self):
         by_id = {r.request_id: r for r in self.requests}
         completed_fares = {i: 0.0 for i in range(self.fleet_size)}
         for cab in self.cabs:
-            if cab.status != "occupied":
+            if cab.status == "idle":
                 continue
+            ride = by_id[cab.ride_id]
             cab.tick_busy()
+            target = ride.origin if cab.status == "en_route" else ride.destination
+            x, y = cab.position
+            tx, ty = target
+            cab.position = (x + (1 if tx > x else -1), y) if x != tx else (x, y + (1 if ty > y else -1))
             cab.remaining -= 1
-            if cab.remaining <= 0:
-                ride = by_id.get(cab.ride_id)
-                if ride:
+            if cab.status == "en_route":
+                cab.empty_distance += 1
+                self.total_empty_distance += 1
+                self.total_pickup_distance += 1
+                if cab.remaining == 0:
+                    ride.pickup_time = self.minute + 1
+                    cab.status = "occupied"
+                    cab.remaining = ride.distance
+            else:
+                self.total_loaded_distance += 1
+                if cab.remaining == 0:
                     ride.status = "completed"
-                    ride.completed_at = self.minute
+                    ride.completed_at = self.minute + 1
                     self.completed += 1
                     self.total_wait += ride.wait_minutes
                     fare = 10.0 + 3.0 * ride.distance
+                    cab.earnings += fare
                     self.total_fare += fare
                     completed_fares[cab.cab_id] += fare
-                cab.position = cab.destination or cab.position
-                cab.status, cab.ride_id, cab.destination = "idle", None, None
+                    cab.status, cab.ride_id, cab.destination = "idle", None, None
         return completed_fares
 
     def _cancel_expired(self):
@@ -146,26 +161,31 @@ class CabDispatchEnv:
                 cancelled_now += 1
         return cancelled_now
 
-    def step(self, actions):
-        self.requests.extend(self.demand.requests_for_minute(self.minute))
-        self.total_requests = len(self.requests)
+    def step(self, actions, assignments=None):
+        if self.minute >= self.day_minutes:
+            raise RuntimeError("Episode has ended")
+        assignments = assignments or {}
         before_empty = {c.cab_id: c.empty_distance for c in self.cabs}
-        completed_fares = self._complete_rides()
         cancelled_now = self._cancel_expired()
 
         for cab in self.cabs:
             if cab.status != "idle" or not self.is_shift_active:
                 continue
             action = actions.get(cab.cab_id, self.ACTION_WAIT)
+            if isinstance(action, tuple):
+                action, assignments[cab.cab_id] = action
             self.last_actions[cab.cab_id] = action
             if action == self.ACTION_ACCEPT:
-                choices = self.open_requests_for(cab)
+                choices = ([r for r in self.requests if r.request_id == assignments[cab.cab_id] and r.status == "open"]
+                           if cab.cab_id in assignments else self.open_requests_for(cab))
                 if choices:
                     request = min(choices, key=lambda r: (manhattan(cab.position, r.origin), r.created_at))
                     self._assign(cab, request)
             elif action in (self.ACTION_NORTH, self.ACTION_SOUTH, self.ACTION_WEST, self.ACTION_EAST):
                 self._move(cab, action)
 
+        idle_ids = {c.cab_id for c in self.cabs if c.status == "idle" and self.is_shift_active}
+        completed_fares = self._complete_rides()
         open_count = sum(r.status == "open" for r in self.requests)
         wait_cost = sum(max(0, self.minute - r.created_at) for r in self.requests if r.status == "open")
         unserved_cost = float(open_count + cancelled_now)
@@ -173,7 +193,7 @@ class CabDispatchEnv:
 
         for cab in self.cabs:
             own_empty = cab.empty_distance - before_empty[cab.cab_id]
-            individual = completed_fares[cab.cab_id] - 0.20 * own_empty
+            individual = completed_fares[cab.cab_id] - 0.20 * own_empty - (0.05 if cab.cab_id in idle_ids else 0.0)
             shared = -0.05 * wait_cost - 1.0 * unserved_cost
             self.last_rewards[cab.cab_id] = individual + self.shared_reward_weight * shared
 
@@ -181,13 +201,17 @@ class CabDispatchEnv:
                           float(wait_cost), unserved_cost)
         self.history.append(stats)
         self.minute += 1
+        if self.minute < self.day_minutes:
+            self.requests.extend(self.demand.requests_for_minute(self.minute))
+            self.total_requests = len(self.requests)
         return stats
 
     def observations(self):
         obs = {}
         for cab in self.cabs:
-            nearby_zones = neighbours(*cab.position)
-            nearby_requests = [r for r in self.requests if r.status == "open" and manhattan(cab.position, r.origin) <= 2]
+            x, y = cab.position
+            nearby_zones = [(x-1,y), (x+1,y), (x,y-1), (x,y+1)]
+            nearby_requests = [r for r in self.requests if r.status == "open" and manhattan(cab.position, r.origin) <= self.sensing_radius]
             directional = []
             for zone in nearby_zones:
                 directional.append(sum(r.status == "open" and r.origin == zone for r in self.requests))
@@ -201,7 +225,7 @@ class CabDispatchEnv:
                 cab.position[0] / max(1, GRID_SIZE - 1),
                 cab.position[1] / max(1, GRID_SIZE - 1),
                 hour / 24.0,
-                1.0 if cab.status == "idle" else 0.0,
+                {"idle": 0.0, "en_route": 0.5, "occupied": 1.0}[cab.status],
                 1.0 if self.is_shift_active else 0.0,
                 min(zone_open, 5) / 5,
                 min(len(nearby_requests), 5) / 5,
@@ -214,25 +238,28 @@ class CabDispatchEnv:
         self.reset()
         while self.minute < self.day_minutes:
             self.step(policy(self))
+        return self.metrics()
+
+    def metrics(self):
         busy = sum(c.busy_minutes for c in self.cabs)
-        for cab in self.cabs:
-            cab.earnings = sum(10.0 + 3.0 * r.distance for r in self.requests
-                               if r.status == "completed" and r.assigned_cab == cab.cab_id)
         earnings = [c.earnings for c in self.cabs]
         mean_earn = sum(earnings) / max(1, len(earnings))
-        fairness = 1.0 - (((sum((x - mean_earn) ** 2 for x in earnings) / max(1, len(earnings))) ** 0.5)
-                          / max(1e-9, mean_earn))
+        fairness = (max(0.0, 1.0 - (sum((x - mean_earn) ** 2 for x in earnings) / len(earnings)) ** 0.5 / mean_earn)
+                    if mean_earn else 0.0)
+        picked = [r for r in self.requests if r.pickup_time is not None]
         return {
-            "minutes": self.day_minutes,
+            "minutes": self.minute,
             "requests": self.total_requests,
             "completed": self.completed,
             "cancelled": self.cancelled,
-            "service_rate": self.completed / max(1, self.completed + self.cancelled),
-            "avg_wait": self.total_wait / max(1, self.completed),
-            "avg_pickup_distance": self.total_pickup_distance / max(1, self.completed),
+            "pending": sum(r.status in ("open", "assigned") for r in self.requests),
+            "service_rate": self.completed / max(1, self.total_requests),
+            "cancellation_rate": self.cancelled / max(1, self.total_requests),
+            "avg_wait": sum(r.wait_minutes for r in picked) / max(1, len(picked)),
+            "avg_pickup_distance": sum(r.pickup_distance for r in picked) / max(1, len(picked)),
             "empty_distance": self.total_empty_distance,
-            "empty_driving_ratio": self.total_empty_distance / max(1, self.total_empty_distance + busy),
-            "utilisation": busy / max(1, self.fleet_size * self.day_minutes),
+            "empty_driving_ratio": self.total_empty_distance / max(1, self.total_empty_distance + self.total_loaded_distance),
+            "utilisation": busy / max(1, self.fleet_size * self.minute),
             "earnings": sum(earnings),
-            "earnings_fairness": max(0.0, fairness),
+            "earnings_fairness": fairness,
         }

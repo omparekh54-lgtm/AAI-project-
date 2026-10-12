@@ -62,7 +62,11 @@ class SharedDQNAgent:
         dones = torch.tensor([b[4] for b in batch], dtype=torch.float32)
         q = self.policy(states).gather(1, actions).squeeze(1)
         with torch.no_grad():
-            next_q = self.target(next_states).max(1).values
+            next_all = self.target(next_states)
+            mask = torch.zeros_like(next_all, dtype=torch.bool)
+            for i, transition in enumerate(batch):
+                mask[i, list(transition[5])] = True
+            next_q = next_all.masked_fill(~mask, -torch.inf).max(1).values
             target = rewards + self.gamma * next_q * (1 - dones)
         loss = nn.functional.smooth_l1_loss(q, target)
         self.optim.zero_grad()

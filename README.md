@@ -22,7 +22,7 @@ A research prototype implementing the AAI project proposal: a decentralised mult
 - Fleet-size sweep: 4, 8, 12, 16 cabs
 - Metrics: wait, pickup distance, service rate, cancellations, empty driving, utilisation, earnings, earnings fairness and convergence
 - VDN cooperative value-decomposition extension
-- Interactive research dashboard
+- Research dashboard with a clearly labelled illustrative animation
 
 ## Architecture
 
@@ -60,7 +60,7 @@ python -m backend.demo
 
 ## Train the proposed DQN
 
-The final experiment uses 360 complete simulated days:
+The training workflow defaults to 360 complete simulated days. The committed validation run uses 30 days; it is not evidence of convergence:
 
 ```bash
 python -m backend.train --episodes 360 --day-minutes 1440 --fleet-size 8 --learn-every 4
@@ -112,3 +112,52 @@ models/          generated model checkpoints
 ## Deployment
 
 The repository is configured for Vercel as a static frontend. Import the GitHub repository into Vercel with the frontend rewrites in `vercel.json`. Every subsequent push to the connected `main` branch can produce a production deployment through Vercel's Git integration.
+
+## Correctness review against the supplied PPT (12 October 2026)
+
+The code implements the proposal's 5×5 grid, 8-agent pilot, one-minute travel,
+24-hour days, synthetic peaks/airport prior, driver shift, local sensing,
+parameter-shared DQN (gamma 0.95), replay/target networks, hybrid reward,
+nearest-cab and historical-prior zone-balancing baselines, multi-seed fleet
+sweeps, and peak/off-peak evaluation. VDN is implemented as an experimental
+extension. QMIX, real taxi-data calibration, ride pooling, EV charging and
+pricing remain future work, as allowed by the proposal.
+
+Corrections made in this review:
+
+- Pickup and passenger travel now advance physically by one zone per minute.
+  Pickup time, drop-off time, cab status and fare follow those transitions.
+- Nearest-cab dispatch reserves the closest eligible cab for each request.
+  The rule dispatcher sees all open requests; DQN executes with local sensing.
+- Observation direction slots retain north/south/west/east meanings at edges.
+  Local sensing is Manhattan radius 1; maximum dispatcher pickup radius is 3.
+- DQN and VDN bootstrap only over valid next actions.
+- Rewards include active idle cost. Metrics include cancellation rate, pending
+  requests, actual empty/loaded distance, pickup distance and earnings fairness.
+- Service and cancellation rates divide by all generated requests. Pending
+  requests at the episode boundary remain unserved, so these rates need not
+  sum to one. Average wait covers picked-up riders, including trips in progress.
+- Peak/off-peak groups partition the entire day and include DQN when a valid
+  checkpoint is supplied. Each method uses identical held-out demand seeds.
+- Result metadata records actual training length, model hash and evaluation
+  seeds. Old simulator checkpoints must be retrained.
+- The browser animation uses illustrative rules. Its decisions and inspector
+  are not outputs from the trained network. Invented Q-value bars were removed.
+  Benchmark metrics are Python outputs and are independent of animation demand.
+
+`configs/default.json` describes the reference design. CLI arguments and the
+`CabDispatchEnv` constructor currently configure runs; that JSON is not loaded
+automatically. Fares use synthetic units. Overnight demand continues while the
+fleet is off shift (06:00–22:00), so overnight cancellations affect full-day
+results. Fairness is a clipped 1 minus coefficient-of-variation score. These
+choices must accompany reported results.
+
+The supplied PPT is a proposal, not measured performance evidence. Its first
+slide lists Kavya Gala (E015), Aarya Shah (E011), and Om Parekh (E031), but the
+last slide lists Kabeer Bilal (E040), Dev Sheth (E054), and Madhav Mehta (E057).
+Reconcile those team details before presenting. The PPT itself was not edited.
+
+Validation: `python -m pytest -q` exercises timing, sensing, assignment,
+timeouts, accounting and DQN/VDN target masking. A short training run and
+held-out benchmark verify execution, not superiority or convergence. Run the
+360-day workflow and assess learning curves before making final claims.

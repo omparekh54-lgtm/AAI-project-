@@ -20,20 +20,20 @@
           <h1>Teach a fleet to <em>think</em> before it drives.</h1>
           <p class="hero-copy">A decentralised multi-agent cab-dispatch simulator comparing nearest-cab and zone-balancing rules with parameter-shared deep reinforcement learning.</p>
         </div>
-        <div class="hero-card"><div class="hero-number" id="episodeValue">360</div><div>full-day training episodes</div><div class="mini-progress"><span></span></div><small>Measured benchmark pipeline</small></div>
+        <div class="hero-card"><div class="hero-number" id="episodeValue">—</div><div>measured training episodes</div><div class="mini-progress"><span></span></div><small>Measured benchmark pipeline</small></div>
       </section>
       <section class="control-panel panel">
         <div class="control"><label>Algorithm</label><select id="algorithm"><option>DQN</option><option>Nearest Cab</option><option>Zone Balancing</option></select></div>
         <div class="control"><label>Fleet size</label><input id="fleet" type="range" min="4" max="12" value="8"><b id="fleetValue">8</b></div>
         <div class="control"><label>Demand</label><select id="demand"><option>Normal</option><option>Peak</option><option>Airport-heavy</option></select></div>
         <div class="control"><label>Speed</label><select id="speed"><option value="700">1×</option><option value="350">2×</option><option value="120">5×</option></select></div>
-        <button id="runBtn" class="primary">Run simulation <span>▶</span></button>
+        <button id="runBtn" class="primary">Run animation <span>▶</span></button>
       </section>
       <section class="main-grid">
         <div class="panel map-panel">
-          <div class="panel-head"><div><p class="eyebrow">LIVE ENVIRONMENT</p><h2>City state</h2></div><div class="clock" id="clock">00:00</div></div>
+          <div class="panel-head"><div><p class="eyebrow">ILLUSTRATIVE ANIMATION</p><h2>City state</h2></div><div class="clock" id="clock">00:00</div></div>
           <div class="city-wrap"><div id="city" class="city"></div></div>
-          <div class="legend"><span><i class="cab-dot"></i> cab</span><span><i class="request-dot"></i> request</span><span><i class="hot-dot"></i> hotspot</span><span><i class="airport-dot"></i> airport</span></div>
+          <p>Animation uses illustrative rules, not the trained DQN. Metrics below come from Python benchmarks; demand controls affect only the animation.</p><div class="legend"><span><i class="cab-dot"></i> cab</span><span><i class="request-dot"></i> request</span><span><i class="hot-dot"></i> hotspot</span><span><i class="airport-dot"></i> airport</span></div>
         </div>
         <aside class="panel agent-panel">
           <div class="panel-head"><div><p class="eyebrow">AGENT INSPECTOR</p><h2 id="agentTitle">Cab 04</h2></div><span class="pill" id="agentStatus">IDLE</span></div>
@@ -41,7 +41,7 @@
           <div class="obs-grid" id="obsGrid"></div>
           <div class="decision-box"><span>Selected decision</span><strong id="decision">WAIT</strong></div>
           <div class="agent-observation"><span>Nearby demand</span><strong id="obsDemand">0 requests</strong></div>
-          <div class="q-values"><p class="eyebrow">Q-VALUE VIEW</p><div id="qValues"></div></div>
+          <div class="q-values"><p class="eyebrow">ANIMATION DETAILS</p><div id="qValues"></div></div>
         </aside>
       </section>
       <section class="metrics-grid">
@@ -53,7 +53,7 @@
         <div class="metric"><span>Fleet earnings</span><strong id="earnMetric">—</strong><small>simulated fare</small></div>
       </section>
       <section class="research-grid">
-        <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">TRAINING</p><h2>DQN reward trajectory</h2></div><span class="chart-note">360 full-day training episodes</span></div><canvas id="rewardChart"></canvas></div>
+        <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">TRAINING</p><h2>DQN reward trajectory</h2></div><span class="chart-note">Training data loading</span></div><canvas id="rewardChart"></canvas></div>
         <div class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">BENCHMARK</p><h2>DQN vs baselines</h2></div><span class="chart-note">8-cab held-out results</span></div><div id="barChart" class="bar-chart"></div></div>
       </section>
     </main>

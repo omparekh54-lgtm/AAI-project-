@@ -1,30 +1,26 @@
-from __future__ import annotations
-from collections import Counter
-from backend.environment.city import neighbours, manhattan
+from backend.environment.city import AIRPORT_ZONE, GRID_SIZE, manhattan
+from .nearest_cab import nearest_cab_policy
+
 
 def zone_balancing_policy(env):
-    actions = {}
-    demand = Counter(r.origin for r in env.requests if r.status == "open")
+    """Greedy matching plus static historical-prior fleet coverage.
+
+    Synthetic prior matches the generator's airport probability. No future or
+    held-out requests are used to construct the target zones.
+    """
+    actions = nearest_cab_policy(env)
+    targets = [AIRPORT_ZONE] * max(1, round(env.fleet_size * env.demand.airport_hotspot))
+    zones = [(x, y) for x in range(GRID_SIZE) for y in range(GRID_SIZE) if (x, y) != AIRPORT_ZONE]
+    remaining = env.fleet_size - len(targets)
+    targets += [zones[(i * len(zones)) // max(1, remaining)] for i in range(remaining)]
     for cab in env.cabs:
-        if cab.status != "idle":
+        if cab.status != 'idle' or not env.is_shift_active or actions[cab.cab_id] != env.ACTION_WAIT:
             continue
-        requests_here = demand.get(cab.position, 0)
-        if requests_here:
-            actions[cab.cab_id] = env.ACTION_ACCEPT
-            continue
-        candidates = list(demand.items())
-        if not candidates:
-            actions[cab.cab_id] = env.ACTION_WAIT
-            continue
-        target, _ = max(candidates, key=lambda item: (item[1], -manhattan(cab.position, item[0])))
-        if manhattan(cab.position, target) <= 1:
-            actions[cab.cab_id] = env.ACTION_ACCEPT
-            continue
-        moves = {env.ACTION_NORTH:(-1,0), env.ACTION_SOUTH:(1,0), env.ACTION_WEST:(0,-1), env.ACTION_EAST:(0,1)}
-        valid = []
-        for action,(dx,dy) in moves.items():
-            p = (cab.position[0]+dx, cab.position[1]+dy)
-            if 0 <= p[0] < 5 and 0 <= p[1] < 5:
-                valid.append((manhattan(p,target), action))
-        actions[cab.cab_id] = min(valid)[1] if valid else env.ACTION_WAIT
+        target = targets[cab.cab_id]
+        x, y = cab.position
+        tx, ty = target
+        if x != tx:
+            actions[cab.cab_id] = env.ACTION_SOUTH if tx > x else env.ACTION_NORTH
+        elif y != ty:
+            actions[cab.cab_id] = env.ACTION_EAST if ty > y else env.ACTION_WEST
     return actions

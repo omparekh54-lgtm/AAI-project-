@@ -13,7 +13,7 @@ def main(episodes=10):
     for name, policy in POLICIES.items():
         rows = []
         for seed in range(42, 42 + episodes):
-            env = CabDispatchEnv(seed=seed, fleet_size=8, day_minutes=180)
+            env = CabDispatchEnv(seed=seed, fleet_size=8, day_minutes=1440)
             rows.append(env.run(policy))
         all_results[name] = summarise(rows)
     os.makedirs("results", exist_ok=True)

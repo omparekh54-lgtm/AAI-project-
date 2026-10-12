@@ -13,6 +13,7 @@ class RideRequest:
     assigned_cab: int | None = None
     pickup_time: int | None = None
     completed_at: int | None = None
+    pickup_distance: int = 0
 
     @property
     def wait_minutes(self) -> int:

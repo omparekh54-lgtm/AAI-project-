@@ -63,7 +63,11 @@ class VDNAgent:
         chosen = q_all.gather(2, actions.unsqueeze(-1)).squeeze(-1).sum(dim=1)
         with torch.no_grad():
             next_all = self.target(next_states.reshape(bsz * nag, st)).reshape(bsz, nag, self.action_size)
-            next_joint = next_all.max(dim=2).values.sum(dim=1)
+            mask = torch.zeros_like(next_all, dtype=torch.bool)
+            for i, transition in enumerate(batch):
+                for j, valid in enumerate(transition[4]):
+                    mask[i, j, list(valid)] = True
+            next_joint = next_all.masked_fill(~mask, -torch.inf).max(dim=2).values.sum(dim=1)
             team_reward = rewards.sum(dim=1)
             target = team_reward + self.gamma * next_joint * (1 - dones)
         loss = nn.functional.smooth_l1_loss(chosen, target)

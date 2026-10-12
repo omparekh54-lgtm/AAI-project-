@@ -2,7 +2,7 @@ from .environment.simulator import CabDispatchEnv
 from .baselines.nearest_cab import nearest_cab_policy
 
 if __name__ == "__main__":
-    env = CabDispatchEnv(seed=42, fleet_size=8, day_minutes=180)
+    env = CabDispatchEnv(seed=42, fleet_size=8, day_minutes=1440)
     result = env.run(nearest_cab_policy)
     print("Nearest-cab smoke test")
     for key, value in result.items():
