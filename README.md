@@ -268,7 +268,7 @@ arrival access. Both controller versions remain separately selectable.
 
 Live dashboard: https://aai-project-dashboard.onrender.com
 
-The viewer opens at 07:00 with the trained DQN replay already playing at one
+The viewer opens at 07:00 and waits for the Start button. Playback advances one
 simulated minute per 1.5 seconds. Pause/resume, single-step, slower pace, restart,
 and a full-day timeline make decisions inspectable. Choose the PPT baselines
 (nearest cab or zone balancing) and fleets of 4/8/12/16. Each uses the same

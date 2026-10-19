@@ -4,13 +4,13 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Watch eight cab agents observe, choose and serve riders. Explore real DQN decisions, compare dispatch methods and inspect measured research results.">
   <title>CabMind · Cab dispatch, explained</title>
-  <link rel="stylesheet" href="styles.css?v=3">
-  <script src="app.js?v=3" defer></script>
+  <link rel="stylesheet" href="styles.css?v=4">
+  <script src="app.js?v=4" defer></script>
 </head>
 <body>
 <header class="topbar"><a class="brand" href="#"><b>CM</b><span>CabMind<small>Multi-agent cab dispatch</small></span></a><nav><a href="#simulation">City simulation</a><a href="#evidence">Research results</a><a href="https://github.com/omparekh54-lgtm/AAI-project-" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header>
 <main>
-  <section class="intro"><div><p class="eyebrow">AAI PROJECT / REINFORCEMENT LEARNING</p><h1>Eight cabs.<br>One city. <em>Smarter decisions.</em></h1><p class="intro-copy">Riders appear across the city. Each cab observes nearby demand, then chooses to pick up a rider, wait, or move to another zone. Watch the trained policy make those choices, one minute at a time.</p></div><div class="reading-guide"><b>How to read the city</b><p><i class="key idle"></i> Numbered squares are cabs. Click one to inspect its decision.</p><p><i class="key rider"></i> Orange circles are riders waiting for pickup.</p><p><i class="key occupied"></i> Purple cabs are carrying a passenger to their destination.</p><a href="#simulation">Follow a dispatch cycle ↓</a></div></section>
+  <section class="intro"><div><p class="eyebrow">AAI PROJECT / REINFORCEMENT LEARNING</p><h1>Eight cabs.<br>One city. <em>Smarter decisions.</em></h1><p class="intro-copy">Riders appear across the city. Each cab observes nearby demand, then chooses to pick up a rider, wait, or move to another zone. Press Start to watch the trained policy make those choices, one minute at a time.</p></div><div class="reading-guide"><b>How to read the city</b><p><i class="key idle"></i> Numbered squares are cabs. Click one to inspect its decision.</p><p><i class="key rider"></i> Orange circles are riders waiting for pickup.</p><p><i class="key occupied"></i> Purple cabs are carrying a passenger to their destination.</p><a href="#simulation">Follow a dispatch cycle ↓</a></div></section>
   <section id="simulation" class="simulation" aria-labelledby="simulationTitle">
     <div class="section-heading"><div><p class="eyebrow">OBSERVE / DECIDE / PICK UP / DROP OFF</p><h2 id="simulationTitle">Follow the dispatch algorithm</h2></div><span class="badge">Actual Python policy decisions · recorded replay</span></div>
     <div id="error" class="error" role="alert" hidden></div>

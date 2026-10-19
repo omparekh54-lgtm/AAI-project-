@@ -7,7 +7,7 @@ const METHODS = {
 };
 const ACTIONS = ['Wait here','Accept a ride','Move north','Move south','Move west','Move east'];
 const STATUS = ['Available','Driving to pickup','Passenger on board'];
-let replay=null, frameIndex=420, selected=0, timer=null, running=false, loading=false, loadVersion=0;
+let replay=null, frameIndex=420, selected=0, timer=null, running=false, started=false, loading=false, loadVersion=0;
 let research=null, curve=null;
 const cache=new Map();
 const time=t=>`${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;
@@ -18,12 +18,12 @@ const mean=(r,k)=>Number(r[`${k}_mean`]??r[k]??0);
 const distance=(a,b)=>Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1]);
 function stop(){clearTimeout(timer);timer=null;running=false;updateControls();}
 function updateControls(){
-  $('pause').textContent=loading?'Loading policy…':running?'Pause':'Resume';
+  $('pause').textContent=loading?'Loading policy…':running?'Pause':started?'Resume':'Start';
   for(const id of ['pause','step','reset','timeline']) $(id).disabled=loading||!replay;
-  if(replay&&!loading){$('playState').textContent=frameIndex===1440?'DAY COMPLETE':running?'PLAYING POLICY REPLAY':'PAUSED · INSPECT A DECISION';}
+  if(replay&&!loading){$('playState').textContent=frameIndex===1440?'DAY COMPLETE':running?'PLAYING POLICY REPLAY':started?'PAUSED · INSPECT A DECISION':'READY · PRESS START TO BEGIN';}
 }
 function schedule(){clearTimeout(timer);if(running)timer=setTimeout(()=>{if(!running)return;if(frameIndex<1440){frameIndex++;render();schedule();}else stop();},Number($('speed').value));}
-function start(){if(!replay||loading)return;if(frameIndex===1440)frameIndex=420;running=true;render();schedule();}
+function start(){if(!replay||loading)return;if(frameIndex===1440)frameIndex=420;started=true;running=true;render();schedule();}
 function showError(message,retry){
   const box=$('error');box.textContent=message;box.hidden=false;
   if(retry){const button=document.createElement('button');button.textContent='Retry loading';button.onclick=retry;box.append(button);}
@@ -169,15 +169,15 @@ async function loadEvidence(){
   if(results[1].status==='fulfilled'){curve=results[1].value;$('trainingMeta').textContent=`${curve.episodes} full-day training episodes × ${curve.day_minutes} simulated minutes. Shared DQN checkpoint.`;drawChart();}else{$('trainingMeta').textContent='Training curve unavailable. Reload to retry.';console.error(results[1].reason);}
 }
 $('pause').onclick=()=>running?stop():start();
-$('step').onclick=()=>{stop();frameIndex=Math.min(1440,frameIndex+1);render();};
-$('reset').onclick=()=>{stop();frameIndex=420;render();};
+$('step').onclick=()=>{stop();started=true;frameIndex=Math.min(1440,frameIndex+1);render();};
+$('reset').onclick=()=>{stop();started=false;frameIndex=420;render();};
 $('speed').onchange=()=>{if(running)schedule();};
 $('algorithm').onchange=()=>loadReplay(running);
 $('fleet').onchange=()=>loadReplay(running);
-$('timeline').oninput=()=>{stop();frameIndex=Number($('timeline').value);render();};
+$('timeline').oninput=()=>{stop();started=true;frameIndex=Number($('timeline').value);render();};
 window.addEventListener('resize',drawChart);
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&running)stop();});
 // Render structure immediately, even if network data is slow or unavailable.
 renderMap({c:[],r:[]});
-loadReplay(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+loadReplay(false);
 loadEvidence();
