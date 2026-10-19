@@ -69,10 +69,15 @@ function renderMap(frame){
     const label=document.createElement('div');label.className='zone-label';label.textContent=zone(x,y);
     if(x===0&&y===4){const a=document.createElement('span');a.className='airport-name';a.textContent='AIRPORT';label.append(a);}z.append(label);
     const pile=document.createElement('div');pile.className='cab-pile';
-    for(const c of frame.c.filter(c=>c[1]===x&&c[2]===y)){
+    const zoneCabs=frame.c.filter(c=>c[1]===x&&c[2]===y);
+    const visibleCabs=zoneCabs.slice(0,2);
+    const focused=zoneCabs.find(c=>c[0]===selected);
+    if(focused&&!visibleCabs.includes(focused))visibleCabs[visibleCabs.length-1]=focused;
+    for(const c of visibleCabs){
       const b=document.createElement('button');b.className=`cab ${['idle','pickup','occupied'][c[3]]}${c[0]===selected?' selected':''}`;
       b.textContent=String(c[0]+1).padStart(2,'0');b.setAttribute('aria-label',`Inspect Cab ${c[0]+1}, ${STATUS[c[3]]}`);b.setAttribute('aria-pressed',String(c[0]===selected));b.title=`Cab ${c[0]+1}: ${STATUS[c[3]]}`;b.onclick=()=>{selected=c[0];render();};pile.append(b);
     }z.append(pile);
+    if(zoneCabs.length>2){const count=document.createElement('span');count.className='pile-count';count.textContent=`+${zoneCabs.length-2}`;count.title=`${zoneCabs.length} cabs here. Select a cab in the fleet list below.`;z.append(count);}
     const riders=document.createElement('div');riders.className='riders';
     frame.r.filter(r=>r[1]===x&&r[2]===y&&r[7]===null).forEach(r=>{
       const dot=document.createElement('span');dot.className='request'+(r[6]!==null?' assigned':'');dot.title=`Rider ${r[0]}: ${zone(r[1],r[2])} to ${zone(r[3],r[4])}, waiting ${frame.t-r[5]} min${r[6]!==null?`, Cab ${r[6]+1} assigned`:''}`;riders.append(dot);
