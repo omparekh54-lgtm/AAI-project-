@@ -41,6 +41,10 @@ jobs:
         run: OMP_NUM_THREADS=1 python -m backend.tune_incoming
       - name: Run held-out full-day fleet/peak benchmark
         run: OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m backend.compare_incoming --episodes ${{ inputs.evaluation_episodes || '20' }}
+      - name: Export policy replays and bundle static research data
+        run: |
+          OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m backend.export_replay
+          python scripts/bundle_research.py
       - name: Upload model and experiment results
         uses: actions/upload-artifact@v4
         with:
@@ -57,5 +61,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f models/dqn_latest.pt models/demand_forecast.json models/incoming_config.json results/experiment_results.json results/experiment_results.csv results/training_curve.json results/incoming_review.json results/incoming_validation.json results/incoming_summary.md
+          git add frontend/data
           git diff --cached --quiet || git commit -m "Publish full-day DQN benchmark"
           git push

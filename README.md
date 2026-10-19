@@ -263,3 +263,35 @@ previous controller. The latest report exposes any waiting-time trade-off
 alongside the empty-distance saving. Tests cover use of known drop-off timing,
 queue priority without double-counting matched riders, and absence of future
 arrival access. Both controller versions remain separately selectable.
+
+## Interactive policy viewer (October 2026)
+
+Live dashboard: https://aai-project-dashboard.onrender.com
+
+The viewer opens at 07:00 with the trained DQN replay already playing at one
+simulated minute per 1.5 seconds. Pause/resume, single-step, slower pace, restart,
+and a full-day timeline make decisions inspectable. Choose the PPT baselines
+(nearest cab or zone balancing) and fleets of 4/8/12/16. Each uses the same
+synthetic demand seed, 810000. The original forecast controllers remain in the
+research comparison and Python backend.
+
+Playback comes from actual Python simulator executions, with Q-values computed
+from `models/dqn_latest.pt`. It does not run training or model inference in the
+browser. Decisions on a frame apply to the next minute. Busy cabs continue their
+assigned routes; they cannot choose a new dispatch action until available.
+The highlighted zones show the selected cab's radius-one local view. Baseline
+central dispatchers can see more information, as documented above.
+
+Rebuild deployable data after changing models, simulator or benchmark outputs:
+
+```bash
+OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m backend.export_replay
+python scripts/bundle_research.py
+python -m http.server 8000 --directory frontend
+```
+
+All browser data lives in `frontend/data`, inside Render's `frontend` publish
+path. This fixes the previous 404s for `/results` outside the published folder.
+The training workflow now republishes this bundle and replays alongside models.
+Research averages and single-seed playback statistics are visibly separate.
+Network failures show an explicit retry message rather than silent blank cards.
