@@ -67,7 +67,8 @@ class SharedDQNAgent:
             for i, transition in enumerate(batch):
                 mask[i, list(transition[5])] = True
             next_q = next_all.masked_fill(~mask, -torch.inf).max(1).values
-            target = rewards + self.gamma * next_q * (1 - dones)
+            discounts = torch.tensor([self.gamma if b[6] is None else b[6] for b in batch], dtype=torch.float32)
+            target = rewards + discounts * next_q * (1 - dones)
         loss = nn.functional.smooth_l1_loss(q, target)
         self.optim.zero_grad()
         loss.backward()

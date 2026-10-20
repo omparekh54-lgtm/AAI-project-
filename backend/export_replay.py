@@ -9,25 +9,44 @@ import json
 from pathlib import Path
 import torch
 from .agents.dqn import SharedDQNAgent
+from .agents.policies import dqn_policy, HybridMatchingPolicy
 from .baselines.nearest_cab import nearest_cab_policy
 from .baselines.zone_balancing import zone_balancing_policy
 from .environment.simulator import CabDispatchEnv
+from .train import STATE_SIZE
 
 SEED = 810000
 STATUSES = {'idle': 0, 'en_route': 1, 'occupied': 2}
+CHECKPOINTS = {'dqn': 'models/dqn_full_s42.pt', 'hybrid': 'models/dqn_hybrid_s42.pt'}
+
+
+def load_agent(path):
+    checkpoint = torch.load(path, map_location='cpu', weights_only=True)
+    if checkpoint.get('simulator_version') != 3:
+        raise ValueError('Replay requires a checkpoint from the current simulator')
+    agent = SharedDQNAgent(state_size=STATE_SIZE)
+    agent.policy.load_state_dict(checkpoint['model'])
+    agent.policy.eval()
+    return agent
+
 
 def export(method, fleet, agent=None):
-    env = CabDispatchEnv(seed=SEED, fleet_size=fleet)
+    learned = method in CHECKPOINTS
+    env = CabDispatchEnv(seed=SEED, fleet_size=fleet, dispatch_reach=learned)
+    if method == 'dqn':
+        policy = dqn_policy(agent)
+    elif method == 'hybrid':
+        policy = HybridMatchingPolicy(agent)
+    else:
+        policy = nearest_cab_policy if method == 'nearest' else zone_balancing_policy
     frames = []
     while True:
         states = env.observations()
         qvalues = None
-        if method == 'dqn':
+        if learned:
             with torch.no_grad():
-                qvalues = agent.policy(torch.tensor(list(states.values()), dtype=torch.float32)).tolist()
-            actions = {c.cab_id: max(env.valid_actions(c), key=lambda a: qvalues[c.cab_id][a]) for c in env.cabs}
-        else:
-            actions = (nearest_cab_policy if method == 'nearest' else zone_balancing_policy)(env)
+                qvalues = agent.policy(torch.tensor([states[c.cab_id] for c in env.cabs], dtype=torch.float32)).tolist()
+        actions = policy(env)
         # Every frame is the pre-action state. Its decisions take effect on next step.
         requests = [r for r in env.requests if r.status in ('open', 'assigned')]
         frame = {
@@ -44,27 +63,27 @@ def export(method, fleet, agent=None):
         if env.minute == env.day_minutes:
             break
         env.step(actions)
-    return {'method': method, 'fleet': fleet, 'seed': SEED, 'schema': 1,
-            'model_sha256': hashlib.sha256(Path('models/dqn_latest.pt').read_bytes()).hexdigest() if agent else None,
+    return {'method': method, 'fleet': fleet, 'seed': SEED, 'schema': 2,
+            'model_sha256': hashlib.sha256(Path(CHECKPOINTS[method]).read_bytes()).hexdigest() if learned else None,
+            'sensing_radius': env.max_pickup_radius if learned else 1,
             'note': 'Recorded Python policy execution. No browser training. Synthetic demand. All methods use identical arrivals.',
             'frames': frames}
 
+
 def main():
     torch.set_num_threads(1)
-    checkpoint = torch.load('models/dqn_latest.pt', map_location='cpu', weights_only=True)
-    if checkpoint.get('simulator_version') != 2:
-        raise ValueError('Replay requires corrected simulator checkpoint')
-    agent = SharedDQNAgent()
-    agent.policy.load_state_dict(checkpoint['model'])
-    agent.policy.eval()
+    agents = {m: load_agent(p) for m, p in CHECKPOINTS.items()}
     output = Path('frontend/data/traces')
     output.mkdir(parents=True, exist_ok=True)
+    for old in output.glob('*.json.gz'):
+        old.unlink()
     for fleet in (4, 8, 12, 16):
-        for method in ('dqn', 'nearest', 'zone'):
-            payload = export(method, fleet, agent if method == 'dqn' else None)
+        for method in ('dqn', 'hybrid', 'nearest', 'zone'):
+            payload = export(method, fleet, agents.get(method))
             path = output / f'{method}-{fleet}.json.gz'
             path.write_bytes(gzip.compress(json.dumps(payload, separators=(',', ':')).encode(), mtime=0))
             print(path, len(payload['frames']), 'frames', flush=True)
+
 
 if __name__ == '__main__':
     main()

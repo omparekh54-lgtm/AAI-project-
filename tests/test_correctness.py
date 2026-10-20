@@ -110,3 +110,17 @@ def test_peak_and_offpeak_partition_every_request():
                     for i, minute in enumerate([0, 420, 600, 660, 960, 1020, 1260, 1439])]
     assert period_metrics(env, True)['service_rate'] == 1
     assert period_metrics(env, False)['service_rate'] == 1
+
+
+def test_vdn_replay_handles_fleet_size_curriculum():
+    # Regression: the curriculum changes fleet size between days; joint
+    # transitions of different fleet sizes must never be stacked in one batch.
+    agent = VDNAgent(n_agents=8, state_size=16, batch_size=2)
+    losses = []
+    for n in (8, 8, 4, 4):
+        agent.remember([[0] * 16] * n, [0] * n, [0] * n, [[0] * 16] * n, [[0]] * n, False)
+        losses.append(agent.learn())
+    # A batch is only drawn once the current fleet's buffer holds batch_size items.
+    assert losses[0] is None and losses[2] is None
+    assert losses[1] is not None and losses[3] is not None
+    assert sorted(agent.memory) == [4, 8] and all(len(v) == 2 for v in agent.memory.values())

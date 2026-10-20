@@ -61,8 +61,8 @@ def test_exploration_is_not_decayed_by_overnight_forced_wait_training(tmp_path, 
     import json
     from backend.train import train
     monkeypatch.chdir(tmp_path)
-    train(episodes=1, day_minutes=300)
-    curve = json.loads((tmp_path / 'results/training_curve.json').read_text())
+    train(episodes=1, day_minutes=300, out_dir=str(tmp_path), quiet=True)
+    curve = json.loads((tmp_path / 'results/training_curve_full_s42.json').read_text())
     assert curve['losses'] == [0.0]
     assert curve['epsilons'] == [1.0]
 

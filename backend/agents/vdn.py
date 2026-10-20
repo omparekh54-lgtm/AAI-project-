@@ -26,14 +26,21 @@ class VDNAgent:
         self.target = QNetwork(state_size, action_size)
         self.target.load_state_dict(self.policy.state_dict())
         self.optim = optim.Adam(self.policy.parameters(), lr=lr)
-        self.memory = []
+        # Joint transitions have one row per cab, so their shape depends on the
+        # fleet size. The training curriculum changes fleet size between days,
+        # so replay is kept per fleet size and each batch is drawn from the
+        # buffer of the fleet currently being simulated.
+        self.capacity = 20000
+        self.memory = {}
+        self._write = {}
+        self._current = None
         self.learn_steps = 0
 
-    def act(self, states, valid_actions):
+    def act(self, states, valid_actions, explore=True):
         actions = []
         for i, state in enumerate(states):
             valid = list(valid_actions[i])
-            if random.random() < self.epsilon:
+            if explore and random.random() < self.epsilon:
                 actions.append(random.choice(valid))
             else:
                 with torch.no_grad():
@@ -42,16 +49,23 @@ class VDNAgent:
         return actions
 
     def remember(self, states, actions, rewards, next_states, next_valid_actions, done):
-        self.memory.append((np.asarray(states, dtype=np.float32), np.asarray(actions, dtype=np.int64),
-                            np.asarray(rewards, dtype=np.float32), np.asarray(next_states, dtype=np.float32),
-                            next_valid_actions, float(done)))
-        if len(self.memory) > 20000:
-            self.memory.pop(0)
+        item = (np.asarray(states, dtype=np.float32), np.asarray(actions, dtype=np.int64),
+                np.asarray(rewards, dtype=np.float32), np.asarray(next_states, dtype=np.float32),
+                next_valid_actions, float(done))
+        key = item[0].shape[0]                     # number of cabs in this joint transition
+        bucket = self.memory.setdefault(key, [])
+        if len(bucket) < self.capacity:
+            bucket.append(item)
+        else:  # ring buffer per fleet size
+            bucket[self._write.get(key, 0)] = item
+            self._write[key] = (self._write.get(key, 0) + 1) % self.capacity
+        self._current = key
 
     def learn(self):
-        if len(self.memory) < self.batch_size:
+        bucket = self.memory.get(self._current, [])
+        if len(bucket) < self.batch_size:
             return None
-        batch = random.sample(self.memory, self.batch_size)
+        batch = random.sample(bucket, self.batch_size)
         states = torch.tensor(np.stack([b[0] for b in batch]), dtype=torch.float32)
         actions = torch.tensor(np.stack([b[1] for b in batch]), dtype=torch.long)
         rewards = torch.tensor(np.stack([b[2] for b in batch]), dtype=torch.float32)
@@ -75,5 +89,4 @@ class VDNAgent:
         self.learn_steps += 1
         if self.learn_steps % 100 == 0:
             self.target.load_state_dict(self.policy.state_dict())
-        self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
         return float(loss.item())

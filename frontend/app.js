@@ -1,10 +1,13 @@
 'use strict';
 const $ = id => document.getElementById(id);
 const METHODS = {
-  dqn: {name:'Parameter-shared DQN', description:'Each cab chooses the highest-scoring valid action from the trained DQN, using its own zone and adjacent-zone observations. Network weights are shared across cabs.'},
+  dqn: {name:'DQN (decentralised, shared weights)', description:'Each cab chooses the highest-scoring valid action from the trained DQN: accept a ride within 3 zones, wait, or move. It sees only its own zone, adjacent zones and nearby requests. Network weights are shared across cabs.'},
+  hybrid: {name:'DQN + Matching (RL repositioning)', description:'The dispatcher assigns riders to idle cabs (each cab accepts its assigned ride). Cabs without a ride use the trained DQN to decide where to wait or reposition.'},
   nearest: {name:'Nearest Cab', description:'The central dispatcher gives each waiting rider the closest available cab within 3 zones. Unassigned cabs wait where they are.'},
   zone: {name:'Zone Balancing', description:'The central dispatcher matches nearby cabs to riders, then sends spare cabs toward fixed historical demand zones, including the airport.'}
 };
+const radius=()=>Number(replay&&replay.sensing_radius)||1;
+const learned=()=>replay&&(replay.method==='dqn'||replay.method==='hybrid');
 const ACTIONS = ['Wait here','Accept a ride','Move north','Move south','Move west','Move east'];
 const STATUS = ['Available','Driving to pickup','Passenger on board'];
 let replay=null, frameIndex=420, selected=0, timer=null, running=false, started=false, loading=false, loadVersion=0;
@@ -54,7 +57,7 @@ async function loadReplay(autoplay=running){
 function validActions(frame,cab){
   if(cab[3]!==0||frame.t<360||frame.t>=1320)return [0];
   const [id,x,y]=cab;const actions=[0];
-  if(frame.r.some(r=>r[6]===null&&distance([x,y],[r[1],r[2]])<=1))actions.push(1);
+  if(frame.r.some(r=>r[6]===null&&distance([x,y],[r[1],r[2]])<=radius()&&replay.method!=='hybrid'))actions.push(1);
   if(x>0)actions.push(2);if(x<4)actions.push(3);if(y>0)actions.push(4);if(y<4)actions.push(5);
   return actions;
 }
@@ -63,7 +66,7 @@ function renderMap(frame){
   const grid=document.createDocumentFragment();
   for(let x=0;x<5;x++)for(let y=0;y<5;y++){
     const z=document.createElement('div');z.className='zone';
-    if(selectedCab&&distance([x,y],[selectedCab[1],selectedCab[2]])<=1)z.classList.add('sensed');
+    if(selectedCab&&distance([x,y],[selectedCab[1],selectedCab[2]])<=radius())z.classList.add('sensed');
     if(selectedCab&&x===selectedCab[1]&&y===selectedCab[2])z.classList.add('selected-zone');
     if(x===0&&y===4)z.classList.add('airport');
     const label=document.createElement('div');label.className='zone-label';label.textContent=zone(x,y);
@@ -88,7 +91,7 @@ function renderMap(frame){
 function renderInspector(frame){
   const c=frame.c[selected];if(!c)return;
   const r=frame.r.find(r=>r[0]===c[7]);
-  const local=frame.r.filter(r=>r[6]===null&&distance([c[1],c[2]],[r[1],r[2]])<=1);
+  const local=frame.r.filter(r=>r[6]===null&&distance([c[1],c[2]],[r[1],r[2]])<=radius());
   const neighbours=frame.c.filter(n=>n[0]!==c[0]&&n[3]===0&&distance([c[1],c[2]],[n[1],n[2]])<=1).length;
   const active=frame.t>=360&&frame.t<1320;
   $('cabTitle').textContent=`Cab ${String(c[0]+1).padStart(2,'0')}`;
@@ -97,10 +100,10 @@ function renderInspector(frame){
   $('observations').innerHTML=`<dt>Current zone</dt><dd>${zone(c[1],c[2])}</dd><dt>Local open riders</dt><dd>${local.length}</dd><dt>Nearby idle peers</dt><dd>${neighbours}</dd><dt>Earned so far</dt><dd>${c[6]} fare units</dd><dt>Previous step reward</dt><dd>${num(c[5],2)}</dd>`;
   const busy=c[3]!==0;
   $('decision').textContent=busy?(c[3]===1?'Continue to pickup':'Continue to drop-off'):!active?'Wait · off shift':ACTIONS[c[4]];
-  $('reason').textContent=busy?'An assigned ride follows its route one zone at a time. The cab makes a new dispatch choice when it becomes available.':!active?'New rides and repositioning are disabled outside the driver shift.':replay.method==='dqn'?`The DQN selected ${ACTIONS[c[4]].toLowerCase()} from its valid actions using the highlighted local view.`:replay.method==='nearest'?(c[4]===1?'The dispatcher reserved this cab for a nearby waiting rider.':'No rider was assigned to this cab this minute.'):(c[4]===1?'A waiting rider was matched to this cab.':c[4]===0?'The cab is waiting in its target coverage zone.':'No ride was assigned, so the cab moves toward its static coverage target.');
-  $('qPanel').hidden=replay.method!=='dqn';
+  $('reason').textContent=busy?'An assigned ride follows its route one zone at a time. The cab makes a new dispatch choice when it becomes available.':!active?'New rides and repositioning are disabled outside the driver shift.':replay.method==='dqn'?`The DQN selected ${ACTIONS[c[4]].toLowerCase()} from its valid actions using the highlighted local view.`:replay.method==='hybrid'?(c[4]===1?'The dispatcher assigned a rider to this cab, so it accepted the ride. The DQN was not asked.':`No rider was assigned, so the DQN chose to ${ACTIONS[c[4]].toLowerCase()}.`):replay.method==='nearest'?(c[4]===1?'The dispatcher reserved this cab for a nearby waiting rider.':'No rider was assigned to this cab this minute.'):(c[4]===1?'A waiting rider was matched to this cab.':c[4]===0?'The cab is waiting in its target coverage zone.':'No ride was assigned, so the cab moves toward its static coverage target.');
+  $('qPanel').hidden=!learned();
   if(frame.q){
-    $('qPanel').querySelector('h4').textContent=busy?'Dispatch scores while this cab is assigned':!active?'Dispatch scores outside the shift':'How the DQN chose this action';
+    $('qPanel').querySelector('h4').textContent=busy?'Network scores while this cab is busy':!active?'Network scores outside the shift':(replay.method==='hybrid'&&c[4]===1?'Scores shown for reference (matcher decided)':'How the DQN chose this action');
     $('qPanel').querySelector('p').textContent=busy?'Only wait is valid for dispatch while the simulator advances the existing trip. The scores below are the network outputs at this state.':!active?'The shift constraint forces wait. These scores do not override the driver shift.':'The network scores each valid action. The highest score wins. These are model outputs, not probabilities.';
     const q=frame.q[selected],valid=validActions(frame,c),lo=Math.min(...q),hi=Math.max(...q);
     $('qValues').replaceChildren(...q.map((value,a)=>{
@@ -147,7 +150,7 @@ function renderEvidence(){
     [r.method,`${num(mean(r,'avg_wait'),2)} min`,`${num(mean(r,'avg_pickup_distance'),2)} zones`,pct(mean(r,'service_rate')),pct(mean(r,'cancellation_rate')),pct(mean(r,'empty_driving_ratio')),pct(mean(r,'utilisation')),num(mean(r,'earnings'),0),num(mean(r,'earnings_fairness'),2)].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td);});return tr;
   }));
   const meta=research.metadata||{};
-  $('evidenceMeta').textContent=`${meta.evaluation_episodes} evaluation days per method · ${meta.day_minutes} minutes per day · ${fleet} cabs · ${meta.training_episodes} DQN training episodes`;
+  $('evidenceMeta').textContent=`${meta.evaluation_episodes} evaluation days per method · ${meta.day_minutes} minutes per day · ${fleet} cabs · ${meta.training_episodes} DQN training days, pooled over ${Object.values(meta.rl_checkpoints||{}).map(v=>v.length).join('/')||'?'} training seeds`;
   const selectedRow=rows.find(r=>r.method===chosen);
   $('benchmarkMetrics').innerHTML=selectedRow?`<div><b>${num(mean(selectedRow,'avg_wait'),2)} ± ${num(selectedRow.avg_wait_std,2)} min</b><small>${chosen}: mean rider wait ± standard deviation</small></div><div><b>${pct(mean(selectedRow,'service_rate'))}</b><small>Full-day trips completed / all requests</small></div>`:'No benchmark recorded for this fleet.';
   const periods=(research.period_results||[]).filter(r=>r.method===chosen);
@@ -155,18 +158,21 @@ function renderEvidence(){
 }
 function drawChart(){
   if(!curve)return;
-  const canvas=$('rewardChart'),ctx=canvas.getContext('2d'),w=canvas.clientWidth,h=210,dpr=window.devicePixelRatio||1;
+  const lines=curve.curves||[{label:'DQN',rewards:curve.rewards,color:'#c4f572'}];
+  const canvas=$('rewardChart'),ctx=canvas.getContext('2d'),w=canvas.clientWidth,h=230,dpr=window.devicePixelRatio||1;
   canvas.width=w*dpr;canvas.height=h*dpr;ctx.scale(dpr,dpr);
-  const vals=curve.rewards||[];if(!vals.length)return;
-  const left=48,right=12,top=18,bottom=30,lo=Math.min(...vals),hi=Math.max(...vals),range=Math.max(1,hi-lo);
+  const smooth=v=>v.map((_,i)=>{const a=v.slice(Math.max(0,i-4),i+1);return a.reduce((x,y)=>x+y,0)/a.length;});
+  const all=lines.flatMap(l=>smooth(l.rewards));if(!all.length)return;
+  const left=52,right=12,top=18,bottom=44,lo=Math.min(...all),hi=Math.max(...all),range=Math.max(1,hi-lo);
   ctx.font='10px system-ui';
   for(let i=0;i<4;i++){let y=top+i*(h-top-bottom)/3;ctx.strokeStyle='#304937';ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle='#acbdb0';ctx.fillText(String(Math.round(hi-i*range/3)),0,y+3);}
-  ctx.strokeStyle='#c4f572';ctx.lineWidth=1.7;ctx.beginPath();vals.forEach((v,i)=>{const x=left+i/Math.max(1,vals.length-1)*(w-left-right),y=top+(hi-v)/range*(h-top-bottom);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.fillStyle='#acbdb0';ctx.fillText('Episode 1',left,h-5);ctx.fillText(`Episode ${vals.length}`,Math.max(left,w-85),h-5);
+  lines.forEach((l,k)=>{const vals=smooth(l.rewards);ctx.strokeStyle=l.color;ctx.lineWidth=1.7;ctx.beginPath();vals.forEach((v,i)=>{const x=left+i/Math.max(1,vals.length-1)*(w-left-right),y=top+(hi-v)/range*(h-top-bottom);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.fillStyle=l.color;ctx.fillRect(left+k*150,h-16,10,3);ctx.fillStyle='#acbdb0';ctx.fillText(l.label,left+k*150+14,h-12);});
+  ctx.fillStyle='#acbdb0';ctx.fillText('Episode 1',left,h-28);ctx.fillText(`Episode ${Math.max(...lines.map(l=>l.rewards.length))}`,Math.max(left,w-85),h-28);
 }
 async function loadEvidence(){
   const results=await Promise.allSettled([json('data/experiment_results.json'),json('data/training_curve.json')]);
   if(results[0].status==='fulfilled'){research=results[0].value;renderEvidence();}else{$('evidenceMeta').textContent='Benchmark data could not load. Reload the page to retry.';console.error(results[0].reason);}
-  if(results[1].status==='fulfilled'){curve=results[1].value;$('trainingMeta').textContent=`${curve.episodes} full-day training episodes × ${curve.day_minutes} simulated minutes. Shared DQN checkpoint.`;drawChart();}else{$('trainingMeta').textContent='Training curve unavailable. Reload to retry.';console.error(results[1].reason);}
+  if(results[1].status==='fulfilled'){curve=results[1].value;$('trainingMeta').textContent=`${curve.episodes} full-day training episodes × ${curve.day_minutes} simulated minutes. Reward per cab, 5-episode moving average, mixed fleet sizes 4–16.`;drawChart();}else{$('trainingMeta').textContent='Training curve unavailable. Reload to retry.';console.error(results[1].reason);}
 }
 $('pause').onclick=()=>running?stop():start();
 $('step').onclick=()=>{stop();started=true;frameIndex=Math.min(1440,frameIndex+1);render();};

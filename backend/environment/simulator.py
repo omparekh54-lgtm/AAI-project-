@@ -33,8 +33,11 @@ class CabDispatchEnv:
 
     def __init__(self, seed=42, fleet_size=8, day_minutes=1440, max_pickup_radius=3,
                  cancellation_timeout=8, shift_start=6 * 60, shift_end=22 * 60,
-                 shared_reward_weight=0.25, sensing_radius=1):
+                 shared_reward_weight=0.25, sensing_radius=1, dispatch_reach=False):
         self.sensing_radius = sensing_radius
+        # dispatch_reach=True gives learning agents the same pickup reach as the
+        # rule dispatchers (max_pickup_radius) and adds 6 reach-wide features.
+        self.dispatch_reach = dispatch_reach
         self.seed = seed
         self.rng = random.Random(seed)
         self.fleet_size = fleet_size
@@ -83,8 +86,9 @@ class CabDispatchEnv:
         return actions
 
     def open_requests_for(self, cab):
+        radius = self.max_pickup_radius if self.dispatch_reach else min(self.sensing_radius, self.max_pickup_radius)
         return [r for r in self.requests if r.status == "open" and
-                manhattan(cab.position, r.origin) <= min(self.sensing_radius, self.max_pickup_radius)]
+                manhattan(cab.position, r.origin) <= radius]
 
     def _move(self, cab, action):
         if not self.is_shift_active:
@@ -221,7 +225,7 @@ class CabDispatchEnv:
             zone_open = sum(r.status == "open" and r.origin == cab.position for r in self.requests)
             local_idle = sum(c.status == "idle" and c.position == cab.position for c in self.cabs)
             hour = (self.minute % 1440) / 60.0
-            obs[cab.cab_id] = [
+            state = [
                 cab.position[0] / max(1, GRID_SIZE - 1),
                 cab.position[1] / max(1, GRID_SIZE - 1),
                 hour / 24.0,
@@ -232,7 +236,24 @@ class CabDispatchEnv:
                 min(local_idle, self.fleet_size) / max(1, self.fleet_size),
             ] + [min(v, 5) / 5 if i % 2 == 0 else min(v, self.fleet_size) / max(1, self.fleet_size)
                   for i, v in enumerate(directional[:8])]
+            if self.dispatch_reach:
+                state += self._reach_features(cab)
+            obs[cab.cab_id] = state
         return obs
+
+    def _reach_features(self, cab):
+        """Six features over the pickup-radius neighbourhood: open-request count,
+        nearest-request closeness, and counts toward north/south/west/east."""
+        x, y = cab.position
+        radius = self.max_pickup_radius
+        near = [r for r in self.requests if r.status == "open" and manhattan(cab.position, r.origin) <= radius]
+        nearest = min((manhattan(cab.position, r.origin) for r in near), default=None)
+        closeness = 0.0 if nearest is None else 1.0 - nearest / (radius + 1)
+        north = sum(r.origin[0] < x for r in near)
+        south = sum(r.origin[0] > x for r in near)
+        west = sum(r.origin[1] < y for r in near)
+        east = sum(r.origin[1] > y for r in near)
+        return [min(len(near), 8) / 8, closeness] + [min(v, 5) / 5 for v in (north, south, west, east)]
 
     def run(self, policy):
         self.reset()
